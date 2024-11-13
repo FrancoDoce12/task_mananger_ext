@@ -1,2 +1,10 @@
-build
-node_modules
+node_modules/*
+
+# Ignorar todo dentro de build
+build/*
+
+# Pero mantener las carpetas (no ignorarlas)
+!build/*/
+
+# Y mantener específicamente manifest.json
+!build/manifest.json
