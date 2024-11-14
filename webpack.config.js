@@ -3,9 +3,12 @@ const path = require("path");
 
 module.exports = {
     mode: "development",
-    entry: './src/editor/editor.js', // Single entry point to isolate the issue
+    entry: {
+        editor: './src/editor/editor.js',
+        action: './src/action/action.js'
+    }, // if we make this object just the first string "./src/editor/editor.js" the command npm build works
     output: {
-        filename: 'editor/editor.js', // Simple output file for testing
+        filename: '[name]/[name].js', // Simple output file for testing
         path: path.resolve(__dirname, "build"),
     },
     target: "web",
