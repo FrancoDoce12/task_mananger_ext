@@ -2,7 +2,7 @@
   "name": "task_mananger_ext",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/main_editor/main_editor.js",
+  "main": "./src/editor/editor.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server .",
@@ -13,6 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.26.0",
+    "@babel/eslint-parser": "^7.25.9",
     "@babel/plugin-transform-runtime": "^7.25.9",
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.25.9",
