@@ -3,10 +3,10 @@ const path = require("path");
 
 module.exports = {
     mode: "development",
-    entry: {main_editor: './src/main_editor/main_editor.js'}, // Single entry point to isolate the issue
+    entry: './src/editor/editor.js', // Single entry point to isolate the issue
     output: {
+        filename: 'editor/editor.js', // Simple output file for testing
         path: path.resolve(__dirname, "build"),
-        filename: "bundle.js", // Simple output file for testing
     },
     target: "web",
     devServer: {
