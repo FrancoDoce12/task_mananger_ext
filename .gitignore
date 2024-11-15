@@ -1,12 +1,14 @@
+# Ignore node_modules folder
 node_modules
 
-#!build/
-
-# Ignorar todos los archivos recursivamente en build
+# Ignore all files recursively in build folder
 build/**/*
 
-# No ignorar las carpetas
+# Don't ignore folders
 !build/**/*/
 
-# No ignorar manifest.json específicamente
+# Don't ignore html files inside the build folder
+!build/**/*.html
+
+# Don't ignore the manifest file inside the build folder
 !build/manifest.json
