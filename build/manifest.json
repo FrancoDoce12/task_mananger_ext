@@ -1,11 +1,11 @@
 {
     "manifest_version": 3,
-    "name": "Hello Extensions of the world!",
+    "name": "Task mananger",
     "description": "Base Level Extension",
     "version": "1.0",
     "action": {
         "default_popup": "/action/action.html",
-        "default_icon": "default_icon.png"
+        "default_icon": "logo_app.png"
     },
     "permissions": [
         "storage",

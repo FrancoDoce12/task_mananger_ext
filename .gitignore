@@ -2,7 +2,7 @@
 node_modules
 
 # Ignore all files recursively in build folder
-build/**/*
+build/**/*.js
 
 # Don't ignore folders
 !build/**/*/
