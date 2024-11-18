@@ -1,14 +1,15 @@
 const path = require("path");
-
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     mode: "development",
     entry: {
         editor: './src/editor/editor.js',
         action: './src/action/action.js'
-    }, // if we make this object just the first string "./src/editor/editor.js" the command npm build works
+    },
     output: {
-        filename: '[name]/[name].js', // Simple output file for testing
+        filename: '[name]/[name].js',
         path: path.resolve(__dirname, "build"),
     },
     target: "web",
@@ -22,6 +23,21 @@ module.exports = {
     resolve: {
         extensions: [".js", ".jsx", ".json", ".ts"],
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: "./src/action/action.html",
+            filename: "action/action.html",
+            chunks: ["action"],
+        }),
+        new HtmlWebpackPlugin({
+            template: "./src/editor/editor.html",
+            filename: "./editor/editor.html",
+            chunks: ["editor"]
+        }),
+        new CopyPlugin({
+            patterns: [{ from: "./src/static" }],
+        }),
+    ],
     module: {
         rules: [
             {
