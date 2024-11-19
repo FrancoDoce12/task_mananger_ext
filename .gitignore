@@ -1,8 +1,6 @@
 # Ignore node_modules folder
 node_modules
 
-# Ignore all files recursively in build folder
-build/**/*
+# production
+build
 
-# Don't ignore folders
-!build/**/*/
