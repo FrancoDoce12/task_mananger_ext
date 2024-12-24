@@ -1,6 +1,11 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
+import TaskContext from "../../sharedComponents/taskContex"
 
-const ViewerContainer = (noTasks = true, ) => {
+
+const ViewerContainer = (noTasks = true) => {
+
+
+    const tasks = useContext(TaskContext)
 
     if (noTasks) {
         return (
@@ -11,8 +16,6 @@ const ViewerContainer = (noTasks = true, ) => {
     }
 }
 
-const TaskCreation = () => {}
-
 const TaskNode = (editMode = true) => {
 
     const [formData, setFormData] = useState({
@@ -20,11 +23,6 @@ const TaskNode = (editMode = true) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        chrome.storage
-        console.log("Hola React Prueba");
-        console.log(chrome.storage)
-        
-
 
     }
 
@@ -66,30 +64,6 @@ const TaskNode = (editMode = true) => {
 }
 
 
-
-const NewTaskBigButtom = () => {
-    return (
-    <Buttom className = "NewTaskBigButtom" > 
-        Create new task +
-    </Buttom>)
-    
-}
-
-
-const TaskViewer = (task) => {
-
-}
-
-// shows a minimised vercion of the task
-const MinimunTaskViewer = () => {
-
-}
-
-
-const ca = () => {
-    let a = [];
-    length.length
-}
 
 
 export default ViewerContainer

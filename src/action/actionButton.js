@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 
 const  handleClick = async (e) => {
-    let quelifyUrl = chrome.runtime.getURL("mainEditor/mainEditor.js");
+    let quelifyUrl = chrome.runtime.getURL("editor/editor.html");
 
     return await chrome.tabs.create({
         "active": true,
