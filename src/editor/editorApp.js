@@ -1,5 +1,5 @@
-import TaskContext from "../sharedComponents/taskContex"
-import ViewerContainer from "./viewContainer/vewContainer"
+import TaskContext from "./editorComponents/sharedComponents"
+import MainContainer from "./editorComponents/mainContainer";
 import { useState, useEffect } from "react"
 
 const EditorApp = () => {
@@ -22,9 +22,9 @@ const EditorApp = () => {
     // getTasks(setTasks) 
 
     return (
-        <TaskContext.Provider value = {tasks}>
+        <TaskContext.Provider value={tasks}>
             <div className="editorApp">
-                <ViewerContainer />
+                <MainContainer />
             </div>
         </TaskContext.Provider>
     )
