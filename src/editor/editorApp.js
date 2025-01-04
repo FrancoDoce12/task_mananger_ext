@@ -1,3 +1,4 @@
+import '../tailwind.css'
 import TaskContext from "./editorComponents/sharedComponents"
 import MainContainer from "./editorComponents/mainContainer";
 import { useState, useEffect } from "react"
@@ -23,7 +24,7 @@ const EditorApp = () => {
 
     return (
         <TaskContext.Provider value={tasks}>
-            <div className="editorApp">
+            <div className="editorApp bg-red-50 p-12">
                 <MainContainer />
             </div>
         </TaskContext.Provider>

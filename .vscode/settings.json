@@ -1,0 +1,28 @@
+{
+    "copy-project-context.filePathsToContext": [
+        {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\Franco\\Desktop\\visualEstudioCode\\chrome_extensions\\task_mananger_ext\\webpack.config.js",
+            "_sep": 1,
+            "external": "file:///c%3A/Users/Franco/Desktop/visualEstudioCode/chrome_extensions/task_mananger_ext/webpack.config.js",
+            "path": "/c:/Users/Franco/Desktop/visualEstudioCode/chrome_extensions/task_mananger_ext/webpack.config.js",
+            "scheme": "file"
+        },
+        {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\Franco\\Desktop\\visualEstudioCode\\chrome_extensions\\task_mananger_ext\\tailwind.config.js",
+            "_sep": 1,
+            "external": "file:///c%3A/Users/Franco/Desktop/visualEstudioCode/chrome_extensions/task_mananger_ext/tailwind.config.js",
+            "path": "/c:/Users/Franco/Desktop/visualEstudioCode/chrome_extensions/task_mananger_ext/tailwind.config.js",
+            "scheme": "file"
+        },
+        {
+            "$mid": 1,
+            "fsPath": "c:\\Users\\Franco\\Desktop\\visualEstudioCode\\chrome_extensions\\task_mananger_ext\\package.json",
+            "_sep": 1,
+            "external": "file:///c%3A/Users/Franco/Desktop/visualEstudioCode/chrome_extensions/task_mananger_ext/package.json",
+            "path": "/c:/Users/Franco/Desktop/visualEstudioCode/chrome_extensions/task_mananger_ext/package.json",
+            "scheme": "file"
+        }
+    ]
+}

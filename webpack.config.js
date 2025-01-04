@@ -45,6 +45,14 @@ module.exports = {
                 exclude: /node_modules/,
                 use: "babel-loader",
             },
+            {
+                test: /\.css$/,
+                use: [
+                    "style-loader", // Inyecta el CSS en el DOM
+                    "css-loader",   // Interpreta los archivos CSS
+                    "postcss-loader", // Procesa Tailwind y otras optimizaciones
+                ],
+            },
         ],
     },
 };
