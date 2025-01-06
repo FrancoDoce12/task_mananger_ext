@@ -3,7 +3,7 @@ import TaskContext from "./sharedComponents"
 
 const TaskViewer = ({taskSelected}) => {
 
-    const contexTasks = useContext(TaskContext)
+    const [contexTasks] = useContext(TaskContext)
 
     // content component can have 3 different forms
     let Content = (<></>)

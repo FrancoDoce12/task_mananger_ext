@@ -23,8 +23,8 @@ const EditorApp = () => {
     // getTasks(setTasks) 
 
     return (
-        <TaskContext.Provider value={tasks}>
-            <div className="editorApp bg-red-50 p-12">
+        <TaskContext.Provider value={[tasks, setTasks]}>
+            <div className="">
                 <MainContainer />
             </div>
         </TaskContext.Provider>

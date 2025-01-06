@@ -5,7 +5,7 @@ import { useContext } from "react";
 
 const SideBar = () => {
 
-    const contexTasks = useContext(TaskContext)
+    const [contexTasks] = useContext(TaskContext)
 
     const tasksComponents = []
 

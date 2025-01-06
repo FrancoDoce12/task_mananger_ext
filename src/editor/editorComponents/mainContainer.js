@@ -8,7 +8,7 @@ const MainContainer = (noTasks = true) => {
     // viewContainer or main container
 
 
-    const tasks = useContext(TaskContext)
+    const [tasks] = useContext(TaskContext)
 
     
 
