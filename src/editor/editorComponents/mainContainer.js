@@ -1,5 +1,7 @@
 import { useState, useContext } from "react"
-import TaskContext from "./sharedComponents" 
+import TaskContext from "./sharedComponents"
+import SideBar from "./sideBar"
+import TaskViewer from "./taskViewer"
 
 
 const MainContainer = (noTasks = true) => {
@@ -8,12 +10,15 @@ const MainContainer = (noTasks = true) => {
 
     const tasks = useContext(TaskContext)
 
+    
+
 
 
 
     return (
-        <div className="mainContainer">
-
+        <div className="flex-row w-full">
+            <SideBar></SideBar>
+            <TaskViewer></TaskViewer>
         </div>
     )
 

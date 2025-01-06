@@ -1,24 +1,30 @@
+import { SideBarTask } from "./tasksComponents";
+import TaskContext from "./sharedComponents";
+import { useContext } from "react";
 
 
 const SideBar = () => {
 
+    const contexTasks = useContext(TaskContext)
+
+    const tasksComponents = []
+
+    // load the tasks from the context to its components
+    for (let i = 0; i < contexTasks.length; i++ ) {
+        // we use the SideBarTask component
+        tasksComponents.push(SideBarTask(contexTasks[i]))
+    }
+
+
     return (
-        <aside>
+        <aside className="flex-col w-2/12 text-center bg-violet-500">
             <h2>Tasks</h2>
-            <nav>
-                <ul>
-                    
-                </ul>
+            <nav className="flex-col">
+                {tasksComponents}
             </nav>
         </aside>
     )
 }
 
-const TaskSimple = (task) => {
-    return (
-        <li>
-            <h4>{task.name}</h4>
-        </li>
-    )
-}
 
+export default SideBar
