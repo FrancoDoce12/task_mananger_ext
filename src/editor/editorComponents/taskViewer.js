@@ -1,35 +1,24 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import TaskContext from "./sharedComponents"
+import { CreateNewTask } from "./tasksComponents"
 
 const TaskViewer = ({taskSelected}) => {
 
     const [contexTasks] = useContext(TaskContext)
 
-    // content component can have 3 different forms
     let Content = (<></>)
 
-
-
-    const handleCreateTask = () => {
-        
-    }
-
-    if (!taskSelected) {
-        Content = (
-            <div className="flex-col">
-            <h1>No task selected</h1>
-            <button>Create task</button>
-            </div>
-        )
+    if (contexTasks.length == 0) {
+        Content = CreateNewTask
     } else {
-        //Content = ()
+        Content = (<>Show current active task</>)
     }
 
 
-    
+
     return (
         <div>
-
+            <Content></Content>
         </div>
     )
 }
