@@ -73,4 +73,33 @@ const TaskForm = () => {
 }
 
 
-export { SideBarTask, TaskForm }
+const CreateNewTask = () => {
+
+    const [state, setState] = useState("new task")
+
+    let Content 
+
+    const handleButton = () => {
+        setState("task form")
+    }
+
+    if (state == "new task") {
+        Content = (
+            <div className="flex-col">
+                <h1>No task selected</h1>
+                <button onClick={handleButton}>
+                    Create task
+                </button>
+            </div>
+        )
+    } else {
+        Content = TaskForm
+    }
+
+
+    return Content
+
+}
+
+
+export { SideBarTask, CreateNewTask, TaskForm }
