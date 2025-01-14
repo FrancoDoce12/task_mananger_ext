@@ -1,17 +1,21 @@
 import { useContext, useState } from "react"
 import TaskContext from "./sharedComponents"
 import { CreateNewTask } from "./tasksComponents"
+import { GetBasicComponent } from "./utils"
 
 const TaskViewer = ({taskSelected}) => {
 
     const [contexTasks] = useContext(TaskContext)
+    console.log("TaskViewer, context tasks", contexTasks)
+    console.log(contexTasks.length)
 
-    let Content = (<></>)
+    // content should be a component, not the result of a componente called (jsx elements)
+    let Content = GetBasicComponent(<></>)
 
     if (contexTasks.length == 0) {
         Content = CreateNewTask
     } else {
-        Content = (<>Show current active task</>)
+        Content = GetBasicComponent(<p>Show current active task</p>)
     }
 
 
