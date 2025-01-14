@@ -6,11 +6,19 @@ module.exports = {
     mode: "development",
     entry: {
         editor: './src/editor/editor.js',
-        action: './src/action/action.js'
+        action: './src/action/action.js',
+        startUp: './src/serviceWorkers/startUp.js'
     },
     output: {
-        filename: '[name]/[name].js',
+        filename: (pathData) => {
+            const name = pathData.chunk.name;
+            if (name === 'startUp') {
+                return 'serviceWorkers/startUp.js'
+            }
+            return '[name]/[name].js'
+        },
         path: path.resolve(__dirname, "build"),
+        clean: true
     },
     target: "web",
     devServer: {

@@ -12,5 +12,9 @@
         "notifications",
         "alarms",
         "tabs"
-    ]
+    ],
+    "background": {
+        "service_worker": "/serviceWorkers/startUp.js",
+        "type": "module"
+    }
 }
