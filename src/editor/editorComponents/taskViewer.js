@@ -9,18 +9,14 @@ const TaskViewer = ({taskSelected}) => {
     let Content = (<></>)
 
     if (contexTasks.length == 0) {
-        Content = CreateNewTask
+        Content = (<CreateNewTask></CreateNewTask>)
     } else {
         Content = (<>Show current active task</>)
     }
 
 
 
-    return (
-        <div>
-            <Content></Content>
-        </div>
-    )
+    return Content
 }
 
 export default TaskViewer
