@@ -11,7 +11,8 @@ const EditorApp = () => {
     useEffect(() => {
 
         const fetchData = async () => {
-            setTasks(await chrome.storage.local.get("tasks"))
+            const tasksExtencionData = (await chrome.storage.local.get("tasks")).tasks
+            setTasks(tasksExtencionData)
         }
         fetchData()
 
