@@ -54,16 +54,20 @@ const TaskForm = () => {
     return (
         <form onSubmit={handleSubmit}>
 
-            <label for="name">task Goal/Name</label>
-            <input id="name" name="name" type="text" placeholder="Find a job!"
+            <label htmlFor="name">task Goal/Name</label>
+            <input required id="name" name="name" type="text" placeholder="Find a job!"
                 onChange={handleChange}></input>
 
-            <label for="name">task Goal/Name</label>
-            <input id="name" name="name" type="text" placeholder="Find a job!"
+            <label htmlFor="description">Description</label>
+            <input id="description" name="description" type="text" placeholder="deliver resumes at....."
                 onChange={handleChange}></input>
 
-            <label for="name">task Goal/Name</label>
-            <input id="name" name="name" type="text" placeholder="Find a job!"
+            <label htmlFor="start date">Start Date</label>
+            <input id="start date" name="start date" type="date"
+                onChange={handleChange}></input>
+
+            <label htmlFor="End Date">End Date</label>
+            <input id="End date" name="End date" type="date"
                 onChange={handleChange}></input>
 
             <button type="submit">Done</button>
