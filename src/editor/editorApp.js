@@ -1,11 +1,12 @@
 import '../tailwind.css'
-import TaskContext from "./editorComponents/sharedComponents"
+import { TaskContext, FunctionalityContext } from "./editorComponents/sharedComponents"
 import MainContainer from "./editorComponents/mainContainer";
 import { useState, useEffect } from "react"
 
 const EditorApp = () => {
 
     const [tasks, setTasks] = useState([]);
+    const [sharedFunctionality] = useState({})
 
 
     useEffect(() => {
@@ -25,9 +26,11 @@ const EditorApp = () => {
 
     return (
         <TaskContext.Provider value={[tasks, setTasks]}>
-            <div className="">
-                <MainContainer />
-            </div>
+            <FunctionalityContext.Provider value={sharedFunctionality}>
+                <div className="">
+                    <MainContainer />
+                </div>
+            </FunctionalityContext.Provider>
         </TaskContext.Provider>
     )
 }

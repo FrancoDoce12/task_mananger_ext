@@ -1,10 +1,10 @@
 import { useContext, useState } from "react"
-import TaskContext from "./sharedComponents"
+import { TaskContext, FunctionalityContext } from "./sharedComponents"
 
 
-const SideBarTask = (task) => {
+const SideBarTask = (task, id) => {
     return (
-        <li>
+        <li key={id}>
             <h5>{task.name}</h5>
         </li>
     )
@@ -19,25 +19,27 @@ const TaskForm = () => {
     // "in progress" is the default form state
     const [formState, setFormState] = useState("in progress")
 
+    const [tasksFromContext, setTasksContext] = useContext(TaskContext) // array of tasks
+    const { setViewerState, setSideBarState } = useContext(FunctionalityContext)
 
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        const [tasksFromContext, setTasksContext] = useContext(TaskContext) // array of tasks
+        let isActivated = false
+        if (tasksFromContext.length == 0) { isActivated = true }
 
+        tasksFromContext.push({ ...taskData, isActivated })
 
-        const fetchData = async () => {
-            // in other parts of the code the isActive parameter
-            // will be activated if it's the only one task existing,
-            // (meaning that the first task created will be activated)
-            tasksFromContext.push({ ...taskData, isActivated: false })
-
+        const saveNewTaksData = async () => {
             await chrome.storage.local.set({ tasks: tasksFromContext })
 
-            setTasksContext(tasksFromContext)
             setFormState("completed")
+            setTasksContext(tasksFromContext)
+            //update the father
+            setViewerState("show current active task")
+            setSideBarState("new task")
         }
-        fetchData()
+        saveNewTaksData()
 
         setFormState("loading")
 
@@ -47,7 +49,7 @@ const TaskForm = () => {
 
     }
 
-    const handleChange = ({ target: { name: value } }) => {
+    const handleChange = ({ target: { name, value } }) => {
         setTaskData({ ...taskData, [name]: value })
     }
 
@@ -77,27 +79,28 @@ const TaskForm = () => {
 }
 
 
-const CreateNewTask = () => {
+const CreateNewTask = ({ state }) => {
 
-    const [state, setState] = useState("new task")
+    const funcObject = useContext(FunctionalityContext)
+    // content shuld br jsx elements
+    let Content
 
-    let Content 
-
-    const handleButton = () => {
-        setState("task form")
+    const handleCreateTaskButton = () => {
+        funcObject.setViewerState("task form")
+        console.log("test")
     }
 
     if (state == "new task") {
         Content = (
             <div className="flex-col">
                 <h1>No task selected</h1>
-                <button onClick={handleButton}>
+                <button onClick={handleCreateTaskButton}>
                     Create task
                 </button>
             </div>
         )
     } else {
-        Content = TaskForm
+        Content = (<TaskForm></TaskForm>)
     }
 
 

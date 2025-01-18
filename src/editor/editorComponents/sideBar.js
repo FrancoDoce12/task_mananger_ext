@@ -1,18 +1,22 @@
 import { SideBarTask } from "./tasksComponents";
-import TaskContext from "./sharedComponents";
-import { useContext } from "react";
+import { TaskContext, FunctionalityContext } from "./sharedComponents";
+import { useContext, useState } from "react";
 
 
-const SideBar = () => {
+const SideBar = ({ state }) => {
 
     const [contexTasks] = useContext(TaskContext)
 
     const tasksComponents = []
 
     // load the tasks from the context to its components
-    for (let i = 0; i < contexTasks.length; i++ ) {
+    for (let i = 0; i < contexTasks.length; i++) {
         // we use the SideBarTask component
-        tasksComponents.push(SideBarTask(contexTasks[i]))
+        tasksComponents.push(SideBarTask(contexTasks[i], i))
+    }
+
+    if (state == "new task") {
+        tasksComponents.push(CreateNewTaskTab([tasksComponents.length]))
     }
 
 
@@ -24,6 +28,23 @@ const SideBar = () => {
             </nav>
         </aside>
     )
+}
+
+
+const CreateNewTaskTab = ({ key }) => {
+
+    const { setViewerState } = useContext(FunctionalityContext)
+
+    const handleClick = () => {
+        setViewerState("task form")
+    }
+
+    return (
+        <li key={key}>
+            <button onClick={handleClick}>
+                <h5>Add New Task +</h5>
+            </button>
+        </li>)
 }
 
 

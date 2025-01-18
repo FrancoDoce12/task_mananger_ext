@@ -1,17 +1,17 @@
 import { useContext, useState } from "react"
-import TaskContext from "./sharedComponents"
+import { TaskContext, FunctionalityContext } from "./sharedComponents"
 import { CreateNewTask } from "./tasksComponents"
 
-const TaskViewer = ({taskSelected}) => {
+const TaskViewer = ({ state }) => {
 
     const [contexTasks] = useContext(TaskContext)
 
     let Content = (<></>)
 
-    if (contexTasks.length == 0) {
-        Content = (<CreateNewTask></CreateNewTask>)
-    } else {
+    if (state == "show current active task") {
         Content = (<>Show current active task</>)
+    } else {
+        Content = (<CreateNewTask state = {state} ></CreateNewTask>)
     }
 
 
