@@ -15,8 +15,10 @@ const SideBar = ({ state }) => {
         tasksComponents.push(SideBarTask(contexTasks[i], i))
     }
 
+    const NewTaskButton = CreateNewTaskTab({key : tasksComponents.length})
+
     if (state == "new task") {
-        tasksComponents.push(CreateNewTaskTab([tasksComponents.length]))
+        tasksComponents.push(NewTaskButton)
     }
 
 
