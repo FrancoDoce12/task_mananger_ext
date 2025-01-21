@@ -11,25 +11,21 @@ const MainContainer = (noTasks = true) => {
     const [contexTasks] = useContext(TaskContext)
 
 
-    console.log(contexTasks)
-
     // states are: "show current active task", "new task", "task form"
-    let taskViewerInitialStatte
-    if (contexTasks.length == 0) { taskViewerInitialStatte = "new task" }
-    else { taskViewerInitialStatte = "show current active task" }
-    const [taskViewerState, setViewerState] = useState(taskViewerInitialStatte)
-
+    let [taskViewerState, setViewerState] = useState("show current active task")
 
     // states are: "normal", "new task", "no tasks"
-    let sideBarInitialState = "normal"
-    if (taskViewerState == "show current active task") { sideBarInitialState = "new task" }
-    const [sideBarState, setSideBarState] = useState(sideBarInitialState)
+    let [sideBarState, setSideBarState] = useState("normal")
 
 
+    if (contexTasks.length == 0) {
+        sideBarState = "normal"
+        taskViewerState = "new task"
+    } else if (taskViewerState == "show current active task") {
+        sideBarState = "new task"
+    }
 
 
-    console.log(taskViewerState)
-    console.log(sideBarState)
 
     const funcObject = useContext(FunctionalityContext)
     funcObject.setViewerState = setViewerState
@@ -37,7 +33,6 @@ const MainContainer = (noTasks = true) => {
 
     funcObject.setSideBarState = setSideBarState
     funcObject.sideBarState = sideBarState
-
 
 
     return (
