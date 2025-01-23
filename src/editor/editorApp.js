@@ -31,13 +31,14 @@ const EditorApp = () => {
         tasks.forEach((task, index) => {
             if (task.isActive) { activeTaskIndexes.push(index) }
         })
-        // if there are no tasks, it will push a undefined value
-        if (tasks.length <= 0) { current.areTasks = false }
 
-        // if there are no active tasks and, adds the firs one
-        if (activeTaskIndexes.length == 0) { activeTaskIndexes.push(0) }
+        // if there is no active task on tasks return 0
+        if (tasks.length > 0 && activeTaskIndexes.length == 0) {
+            return 0
+        }
 
-        // if the value is undefined, return null
+        // if the item at index 0 is undefined, return null
+        // if we get here that means that there are no tasks at all
         return activeTaskIndexes[0] || null
 
     }, [tasks])
