@@ -28,13 +28,15 @@ const TaskForm = () => {
         let isActive = false
         if (tasksFromContext.length == 0) { isActive = true }
 
-        tasksFromContext.push({ ...taskData, isActive })
+        const newTasks = [...tasksFromContext]
+
+        newTasks.push({ ...taskData, isActive })
 
         const saveNewTaksData = async () => {
-            await chrome.storage.local.set({ tasks: tasksFromContext })
+            await chrome.storage.local.set({ tasks: newTasks })
 
             setFormState("completed")
-            setTasksContext(tasksFromContext)
+            setTasksContext(newTasks)
             //update the father
             setViewerState("show current active task")
             setSideBarState("new task")
@@ -85,7 +87,6 @@ const CreateNewTask = ({ state }) => {
 
     const handleCreateTaskButton = () => {
         funcObject.setViewerState("task form")
-        console.log("test")
     }
 
     if (state == "new task") {
@@ -122,4 +123,4 @@ const ShowTaskView = ({ task }) => {
 }
 
 
-export { SideBarTask, CreateNewTask, TaskForm }
+export { SideBarTask, CreateNewTask, TaskForm, ShowTaskView }
