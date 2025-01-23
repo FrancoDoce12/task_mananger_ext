@@ -25,10 +25,10 @@ const TaskForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        let isActivated = false
-        if (tasksFromContext.length == 0) { isActivated = true }
+        let isActive = false
+        if (tasksFromContext.length == 0) { isActive = true }
 
-        tasksFromContext.push({ ...taskData, isActivated })
+        tasksFromContext.push({ ...taskData, isActive })
 
         const saveNewTaksData = async () => {
             await chrome.storage.local.set({ tasks: tasksFromContext })
@@ -82,8 +82,6 @@ const TaskForm = () => {
 const CreateNewTask = ({ state }) => {
 
     const funcObject = useContext(FunctionalityContext)
-    // content shuld br jsx elements
-    let Content
 
     const handleCreateTaskButton = () => {
         funcObject.setViewerState("task form")
@@ -91,21 +89,36 @@ const CreateNewTask = ({ state }) => {
     }
 
     if (state == "new task") {
-        Content = (
+        return (
             <div className="flex-col">
-                <h1>No task selected</h1>
+                <h1>No active tasks</h1>
                 <button onClick={handleCreateTaskButton}>
                     Create task
                 </button>
             </div>
         )
     } else {
-        Content = (<TaskForm></TaskForm>)
+        return (<TaskForm></TaskForm>)
     }
 
 
-    return Content
 
+}
+
+const ShowTaskView = ({ task }) => {
+
+    let description
+    if (task.description) { description = <p>{task.description}</p> }
+
+    let childs
+    if (task.childs) { childs = task.childs }
+
+    return (
+        <div>
+            <h1>{task.name}</h1>
+            {description}
+            {childs}
+        </div>)
 }
 
 

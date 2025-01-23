@@ -17,16 +17,19 @@ const MainContainer = (noTasks = true) => {
     // states are: "normal", "new task", "no tasks"
     let [sideBarState, setSideBarState] = useState("normal")
 
-
-    if (contexTasks.length == 0) {
+    // if the viewer state is "show the current active task" and there are no tasks to show
+    // set the states of sideBar to normal and taskViwewr to "new task"
+    if ((contexTasks.length == 0) && (taskViewerState == "show current active task")) {
         sideBarState = "normal"
         taskViewerState = "new task"
-    } else if (taskViewerState == "show current active task") {
+    }
+    // always have to show a component with the posibility of create a new task
+    else if (taskViewerState == "show current active task") {
         sideBarState = "new task"
     }
 
 
-
+    // used to let children communicate with other children by their father
     const funcObject = useContext(FunctionalityContext)
     funcObject.setViewerState = setViewerState
     funcObject.taskViewerState = taskViewerState
