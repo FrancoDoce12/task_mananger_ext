@@ -1,22 +1,23 @@
 import { useContext, useState } from "react"
 import { TaskContext, FunctionalityContext } from "./sharedComponents"
-import { CreateNewTask } from "./tasksComponents"
+import { CreateNewTask, ShowTaskView } from "./tasksComponents"
 
 const TaskViewer = ({ state }) => {
 
     const [contexTasks] = useContext(TaskContext)
 
-    let Content = (<></>)
+    const funcObject = useContext(FunctionalityContext)
 
     if (state == "show current active task") {
-        Content = (<>Show current active task</>)
+        // if we get here, that means that at least there are one or more tasks
+        return (
+            <ShowTaskView
+                task={contexTasks[funcObject.activeTaskIndex]}>
+            </ShowTaskView>)
     } else {
-        Content = (<CreateNewTask state = {state} ></CreateNewTask>)
+        return (<CreateNewTask state={state} ></CreateNewTask>)
     }
 
-
-
-    return Content
 }
 
 export default TaskViewer
