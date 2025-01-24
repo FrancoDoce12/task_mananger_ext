@@ -39,7 +39,7 @@ const EditorApp = () => {
 
         // if the item at index 0 is undefined, return null
         // if we get here that means that there are no tasks at all
-        return activeTaskIndexes[0] || null
+        return activeTaskIndexes[0]
 
     }, [tasks])
 
