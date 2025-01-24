@@ -2,10 +2,36 @@ import { useContext, useState } from "react"
 import { TaskContext, FunctionalityContext } from "./sharedComponents"
 
 
-const SideBarTask = (task, id) => {
+const SideBarTask = ({task, id}) => {
+
+    const [tasks, setTasks] = useContext(TaskContext)
+
+    let Button
+
+    // negates his own value and then assign it
+    const handleClick = () => {
+        const newTasks = [...tasks]
+        newTasks[id].isActive = !(newTasks[id].isActive)
+        setTasks(newTasks)
+    }
+
+    if (task.isActive) {
+        Button = (
+            <button onClick={handleClick}>
+                Deactivate
+            </button>)
+    } else {
+        Button = (
+            <button onClick={handleClick}>
+                Active
+            </button>)
+    }
+
+
     return (
         <li key={id}>
             <h5>{task.name}</h5>
+            {Button}
         </li>
     )
 }
@@ -30,7 +56,9 @@ const TaskForm = () => {
 
         const newTasks = [...tasksFromContext]
 
-        newTasks.push({ ...taskData, isActive })
+        const newTask = { ...taskData, isActive }
+
+        newTasks.push(newTask)
 
         const saveNewTaksData = async () => {
             await chrome.storage.local.set({ tasks: newTasks })
