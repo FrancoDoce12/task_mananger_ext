@@ -12,10 +12,17 @@ const SideBar = ({ state }) => {
     // load the tasks from the context to its components
     for (let i = 0; i < contexTasks.length; i++) {
         // we use the SideBarTask component
-        tasksComponents.push(SideBarTask(contexTasks[i], i))
+        tasksComponents.push(
+            <SideBarTask
+                task={contexTasks[i]} key={i} id={i}>
+            </SideBarTask>
+        )
     }
 
-    const NewTaskButton = CreateNewTaskTab({key : tasksComponents.length})
+    const NewTaskButton = (
+        <CreateNewTaskTab
+            key={tasksComponents.length} id={tasksComponents.length}>
+        </CreateNewTaskTab>)
 
     if (state == "new task") {
         tasksComponents.push(NewTaskButton)
@@ -33,7 +40,7 @@ const SideBar = ({ state }) => {
 }
 
 
-const CreateNewTaskTab = ({ key }) => {
+const CreateNewTaskTab = ({ id }) => {
 
     const { setViewerState } = useContext(FunctionalityContext)
 
@@ -42,7 +49,7 @@ const CreateNewTaskTab = ({ key }) => {
     }
 
     return (
-        <li key={key}>
+        <li key={id}>
             <button onClick={handleClick}>
                 <h5>Add New Task +</h5>
             </button>
