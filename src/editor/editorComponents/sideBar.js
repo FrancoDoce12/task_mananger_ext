@@ -1,4 +1,4 @@
-import { SideBarTask } from "./tasksComponents";
+import SideBarTask from "./taskComponents/SideBarTask";
 import { TaskContext, FunctionalityContext } from "./sharedComponents";
 import { useContext, useState } from "react";
 
@@ -12,16 +12,17 @@ const SideBar = ({ state }) => {
     // load the tasks from the context to its components
     for (let i = 0; i < contexTasks.length; i++) {
         // we use the SideBarTask component
+        const task = contexTasks[i]
         tasksComponents.push(
             <SideBarTask
-                task={contexTasks[i]} key={i} id={i}>
+                task={task} key={task.id} id={task.id}>
             </SideBarTask>
         )
     }
 
     const NewTaskButton = (
         <CreateNewTaskTab
-            key={tasksComponents.length} id={tasksComponents.length}>
+            key={"create-new-task-button"} id={"create-new-task-button"}>
         </CreateNewTaskTab>)
 
     if (state == "new task") {

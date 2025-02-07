@@ -2,6 +2,8 @@ import '../tailwind.css'
 import { TaskContext, FunctionalityContext } from "./editorComponents/sharedComponents"
 import MainContainer from "./editorComponents/mainContainer";
 import { useState, useEffect, useRef, useMemo } from "react"
+import { useTasks } from '../hooks/useTasks';
+import { TaskService } from '../serviceWorkers/taskServices';
 
 const EditorApp = () => {
 
@@ -13,11 +15,15 @@ const EditorApp = () => {
     // fetch the local extencion data for the first time
     useEffect(() => {
 
-        const fetchData = async () => {
-            const tasksExtencionData = (await chrome.storage.local.get("tasks")).tasks
-            setTasks(tasksExtencionData || [])
+        const fetchExtencionData = async () => {
+            
+            const tasksData = await TaskService.getAllTasks()
+
+            // load the data into the app context
+            current.idCounter = await TaskService.getIdCounter()
+            setTasks(tasksData)
         }
-        fetchData()
+        fetchExtencionData()
 
     }, [])
 
@@ -25,22 +31,10 @@ const EditorApp = () => {
     // re calculate vars that depends on the task array
     // it runs befor the re render of this component and its
     // childs so it is a good solution to the problem
-    current.activeTaskIndex = useMemo(() => {
+    current.activeTasksSelection = useMemo(() => {
 
-        const activeTaskIndexes = []
-        tasks.forEach((task, index) => {
-            if (task.isActive) { activeTaskIndexes.push(index) }
-        })
-
-        // if there is no active task on tasks return 0
-        if (tasks.length > 0 && activeTaskIndexes.length == 0) {
-            return 0
-        }
-
-        // if the item at index 0 is undefined, return null
-        // if we get here that means that there are no tasks at all
-        return activeTaskIndexes[0]
-
+        return TaskService.selectActiveFatherTasks(tasks)
+        
     }, [tasks])
 
 
