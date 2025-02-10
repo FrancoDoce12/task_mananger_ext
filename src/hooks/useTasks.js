@@ -9,6 +9,8 @@ export const useTasks = () => {
     return {
         tasks,
 
+        refObject,
+
         addTask: async (newTask) => {
             const updatedTasks = await TaskService.addTask(newTask, tasks, refObject);
             setTasks(updatedTasks);
@@ -20,6 +22,14 @@ export const useTasks = () => {
 
         getChildsTasks: (fatherTask) => {
             return TaskService.selectTasksByIds(fatherTask.childsIds, tasks);
+        },
+
+        setTaskToShow: (task) => {
+            refObject.setTaskToShow(task);
+        },
+
+        getActiveTask: () => {
+            return refObject.activeTasksSelection?.tasks?.[0];
         },
 
         toggleTask: async (task) => {
