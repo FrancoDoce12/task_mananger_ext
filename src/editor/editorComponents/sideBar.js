@@ -7,6 +7,7 @@ const SideBar = ({ state }) => {
 
     const [contexTasks] = useContext(TaskContext)
 
+    // list of the components of the list
     const tasksComponents = []
 
     // load the tasks from the context to its components

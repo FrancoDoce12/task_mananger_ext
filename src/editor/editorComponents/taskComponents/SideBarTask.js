@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-import { TaskContext } from '../sharedComponents';
 import { useTasks } from '../../../hooks/useTasks';
 
 /**
@@ -10,16 +8,12 @@ import { useTasks } from '../../../hooks/useTasks';
  */
 const SideBarTask = ({ task, id }) => {
 
-    const { toggleTask } = useTasks()
-
-    const handleClick = () => {
-        toggleTask(task)
-    };
+    const { toggleTask, setTaskToShow } = useTasks()
 
     return (
         <li key={id}>
-            <h5>{task.name}</h5>
-            <button onClick={handleClick}>
+            <h5 onClick={() => { setTaskToShow(task) }} >{task.name}</h5>
+            <button onClick={() => { toggleTask(task) }}>
                 {task.isActive ? 'Deactivate' : 'Activate'}
             </button>
         </li>

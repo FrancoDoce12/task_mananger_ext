@@ -16,7 +16,7 @@ const EditorApp = () => {
     useEffect(() => {
 
         const fetchExtencionData = async () => {
-            
+
             const tasksData = await TaskService.getAllTasks()
 
             // load the data into the app context
@@ -34,16 +34,14 @@ const EditorApp = () => {
     current.activeTasksSelection = useMemo(() => {
 
         return TaskService.selectActiveFatherTasks(tasks)
-        
+
     }, [tasks])
 
 
     return (
         <TaskContext.Provider value={[tasks, setTasks]}>
             <FunctionalityContext.Provider value={current}>
-                <div className="">
-                    <MainContainer />
-                </div>
+                <MainContainer />
             </FunctionalityContext.Provider>
         </TaskContext.Provider>
     )

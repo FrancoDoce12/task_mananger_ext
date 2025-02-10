@@ -4,12 +4,14 @@ import SideBar from "./sideBar"
 import TaskViewer from "./taskViewer"
 
 
-const MainContainer = (noTasks = true) => {
+const MainContainer = () => {
     // viewContainer or main container
-
 
     const [contexTasks] = useContext(TaskContext)
 
+    const funcObject = useContext(FunctionalityContext)
+
+    const [taskToShow, setTaskToShow] = useState(funcObject.activeTasksSelection.tasks[0])
 
     // states are: "show current active task", "new task", "task form"
     let [taskViewerState, setViewerState] = useState("show current active task")
@@ -30,18 +32,22 @@ const MainContainer = (noTasks = true) => {
 
 
     // used to let children communicate with other children by their father
-    const funcObject = useContext(FunctionalityContext)
     funcObject.setViewerState = setViewerState
-    funcObject.taskViewerState = taskViewerState
-
+    funcObject.setTaskToShow = setTaskToShow
     funcObject.setSideBarState = setSideBarState
+
+    funcObject.taskToShow = taskToShow
+    funcObject.taskViewerState = taskViewerState
     funcObject.sideBarState = sideBarState
 
 
     return (
-        <div className="flex-col w-full">
+        <div className="flex flex-row w-full h-screen ">
             <SideBar state={sideBarState}></SideBar>
-            <TaskViewer state={taskViewerState}></TaskViewer>
+            <TaskViewer
+                state={taskViewerState}
+                task={taskToShow}>
+            </TaskViewer>
         </div>
     )
 
