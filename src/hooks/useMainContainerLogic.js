@@ -3,7 +3,7 @@ import { useTasks } from "./useTasks";
 
 export const useMainContainerLogic = () => {
 
-    const { tasks, refObject, getActiveTask } = useTasks();
+    const { tasks, refObject, getActiveTask, isActiveTask } = useTasks();
 
     const [taskToShow, setTaskToShow] = useState(getActiveTask());
 
@@ -15,7 +15,7 @@ export const useMainContainerLogic = () => {
 
     // if the viewer state is "show the current active task" and there are no tasks to show
     // set the states of sideBar to normal and taskViwewr to "new task"
-    if ((tasks.length == 0) && (taskViewerState == "show current active task")) {
+    if ((isActiveTask()) && (taskViewerState == "show current active task")) {
         sideBarState = "normal";
         taskViewerState = "new task";
     }

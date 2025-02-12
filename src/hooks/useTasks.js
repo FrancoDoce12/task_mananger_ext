@@ -32,6 +32,8 @@ export const useTasks = () => {
             return refObject.activeTasksSelection?.tasks?.[0];
         },
 
+        isActiveTask: () => Boolean(refObject.activeTasksSelection?.tasks?.[0]),
+
         toggleTask: async (task) => {
             const updatedTasks = await TaskService.updateTask(
                 task.id,
