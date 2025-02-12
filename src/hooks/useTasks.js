@@ -2,6 +2,19 @@ import { useContext } from 'react';
 import { TaskContext, FunctionalityContext } from '../editor/editorComponents/sharedComponents.js';
 import { TaskService } from '../serviceWorkers/taskServices';
 
+
+// task schema 
+/**
+     * @typedef {Object} Task
+     * @property {number} id - The unique identifier for the task.
+     * @property {string} name - The name of the task.
+     * @property {string} description - A description of the task.
+     * @property {number|null} fatherId - The ID of the parent task, if any.
+     * @property {number[]} childsIds - An array of child task IDs.
+     * @property {number} startDate - The timestamp when the task was created.
+     * @property {number} endDate - The timestamp when the task was created.
+ */
+
 export const useTasks = () => {
     const [tasks, setTasks] = useContext(TaskContext);
     const refObject = useContext(FunctionalityContext);

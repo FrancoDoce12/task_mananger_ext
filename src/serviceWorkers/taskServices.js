@@ -10,10 +10,10 @@ import { dataKeyWords } from "../constants/enums";
      * @property {number} id - The unique identifier for the task.
      * @property {string} name - The name of the task.
      * @property {string} description - A description of the task.
-     * @property {boolean} description - A description of the task.
      * @property {number|null} fatherId - The ID of the parent task, if any.
      * @property {number[]} childsIds - An array of child task IDs.
      * @property {number} startDate - The timestamp when the task was created.
+     * @property {number} endDate - The timestamp when the task was created.
  */
 
 /**
@@ -165,6 +165,7 @@ export const TaskService = {
             fatherId: null,
             childsIds: [],
             startDate: Date.now(),
+            endDate: null,
         };
         // overwrite default values with the previus task
         const normTask = { ...defaultValues, ...oldTask };
