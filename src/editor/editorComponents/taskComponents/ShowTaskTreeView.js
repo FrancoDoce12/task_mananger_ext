@@ -2,17 +2,14 @@ import '@xyflow/react/dist/style.css';
 import '../../../tailwind.css'
 import { ReactFlow, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
 import { useCallback } from 'react';
-
-
-
-const initialNodes = [
-    { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
-    { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
-];
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
+import useNodesLogic from '../../../hooks/useNodesLogic';
 
 
 const ShowTaskTreeView = ({ task }) => {
+
+    const nodesHook = useNodesLogic();
+
+    const {initialEdges, initialNodes} = nodesHook.getFamilyNodesAndEdges(task);
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
