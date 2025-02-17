@@ -38,11 +38,17 @@ export const useTasks = () => {
         },
 
         setTaskToShow: (task) => {
-            refObject.setTaskToShow(task);
+            return refObject.setSelectedTask(task);
         },
 
+        // TODO: HET MAIN TASK
+
         getActiveTask: () => {
-            return refObject.activeTasksSelection?.tasks?.[0];
+            const activeTask = refObject.activeTasksSelection?.tasks?.[0];
+            if (!activeTask) {
+                return tasks[0];
+            };
+            return activeTask;
         },
 
         getChildsSelection: (fatherTask) => {
