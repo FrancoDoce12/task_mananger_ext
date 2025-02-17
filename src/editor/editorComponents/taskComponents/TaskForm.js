@@ -13,6 +13,9 @@ const formStatesKeys = {
  * Form component for creating or editing a task.
  */
 const TaskForm = ({ fatherId = null }) => {
+    // fatherId for the task what will be upladed,
+    // if there is a father id that means that this task
+    // will be a child of the father id
     const [taskData, setTaskData] = useState({});
     const [formState, setFormState] = useState(formStatesKeys.INITIAL_STATE);
     const { setViewerState, setSideBarState } = useContext(FunctionalityContext);
