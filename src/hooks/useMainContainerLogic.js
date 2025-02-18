@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTasks } from "./useTasks";
+import { viewerStates, sideBarStates } from "../constants/enums";
 
 export const useMainContainerLogic = () => {
 
@@ -10,31 +11,31 @@ export const useMainContainerLogic = () => {
     }, [tasks]);
 
     // states are: "show current active task", "new task", "task form", "show selected task"
-    let [taskViewerState, setViewerState] = useState("show current active task");
+    let [taskViewerState, setViewerState] = useState(viewerStates.SHOW_CURRENT_ACTIVE_TASK);
 
     let [selectedTask, setSelectedTask] = useState(null);
 
     // states are: "normal", "new task", "no tasks"
-    let [sideBarState, setSideBarState] = useState("normal");
+    let [sideBarState, setSideBarState] = useState(sideBarStates.NORMAL);
 
     // if the viewer state is "show the current active task" and there are no tasks to show
     // set the states of sideBar to normal and taskViwewr to "new task"
-    if ((!taskToShow) && (taskViewerState == "show current active task")) {
-        sideBarState = "normal";
-        taskViewerState = "new task";
+    if ((!taskToShow) && (taskViewerState == viewerStates.SHOW_CURRENT_ACTIVE_TASK)) {
+        sideBarState = sideBarStates.NORMAL;
+        taskViewerState = viewerStates.NEW_TASK;
     }
     // always have to show a component with the posibility of create a new task
-    else if (taskViewerState != "new task") {
-        sideBarState = "new task";
+    else if (taskViewerState != viewerStates.NEW_TASK) {
+        sideBarState = sideBarStates.NEW_TASK;
     }
-    else if (taskViewerState == "show selected task") {
+    else if (taskViewerState == viewerStates.SHOW_SELECTED_TASK) {
         taskToShow = selectedTask;
     }
 
     const setSelectedTaskToShow = (task) => {
         if (task) {
             setSelectedTask(task);
-            setViewerState("show selected task");
+            setViewerState(viewerStates.SHOW_SELECTED_TASK);
         };
     };
 
