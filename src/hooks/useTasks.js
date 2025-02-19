@@ -63,5 +63,10 @@ export const useTasks = () => {
             );
             setTasks(updatedTasks);
         },
+
+        updateTask: async (task, update) => {
+            const updatedTasks = (await TaskService.updateTask(task.id, update, tasks));
+            setTasks(updatedTasks);
+        },
     };
 };

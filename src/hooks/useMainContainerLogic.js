@@ -13,10 +13,11 @@ export const useMainContainerLogic = () => {
     // states are: "show current active task", "new task", "task form", "show selected task"
     let [taskViewerState, setViewerState] = useState(viewerStates.SHOW_CURRENT_ACTIVE_TASK);
 
-    let [selectedTask, setSelectedTask] = useState(null);
+    let [selectedTask, setSelectedTask] = useState({});
 
     // states are: "normal", "new task", "no tasks"
     let [sideBarState, setSideBarState] = useState(sideBarStates.NORMAL);
+
 
     // if the viewer state is "show the current active task" and there are no tasks to show
     // set the states of sideBar to normal and taskViwewr to "new task"
@@ -25,19 +26,19 @@ export const useMainContainerLogic = () => {
         taskViewerState = viewerStates.NEW_TASK;
     }
     // always have to show a component with the posibility of create a new task
-    else if (taskViewerState != viewerStates.NEW_TASK) {
-        sideBarState = sideBarStates.NEW_TASK;
-    }
-    else if (taskViewerState == viewerStates.SHOW_SELECTED_TASK) {
-        taskToShow = selectedTask;
-    }
+    if (taskViewerState != viewerStates.NEW_TASK) { sideBarState = sideBarStates.NEW_TASK; };
 
-    const setSelectedTaskToShow = (task) => {
-        if (task) {
-            setSelectedTask(task);
-            setViewerState(viewerStates.SHOW_SELECTED_TASK);
-        };
-    };
+    if (taskViewerState == viewerStates.SHOW_SELECTED_TASK) { taskToShow = selectedTask; };
+
+
+    const setSelectedTaskToShow = useMemo(() => {
+        return (task) => {
+            if (task) {
+                setSelectedTask(task);
+                setViewerState(viewerStates.SHOW_SELECTED_TASK);
+            };
+        }
+    }, [taskViewerState, selectedTask]);
 
     useMemo(() => {
         // used to let children communicate with other children by their father

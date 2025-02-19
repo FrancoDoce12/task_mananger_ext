@@ -1,6 +1,7 @@
 import ShowTaskTreeView from "./taskComponents/ShowTaskTreeView";
 import CreateNewTask from "./taskComponents/CreateNewTask";
 import TaskForm from "./taskComponents/TaskForm";
+import TaskDetail from "./taskComponents/taskDetail";
 
 const TaskViewer = ({ state, task }) => {
 
@@ -9,11 +10,14 @@ const TaskViewer = ({ state, task }) => {
     }
     else if (state == "show selected task" || state == "show current active task") {
         // if we get here, that means that at least there are one or more tasks
-        return (
+        return (<>
+            <TaskDetail
+                task={task}>
+            </TaskDetail>
             <ShowTaskTreeView
-                task={task}
-            >
-            </ShowTaskTreeView>)
+                task={task}>
+            </ShowTaskTreeView>
+        </>)
     }
     else if (state == "task form") {
         return <TaskForm />;
