@@ -17,7 +17,6 @@ export const useMainContainerLogic = () => {
 
     // states are: "normal", "new task", "no tasks"
     let [sideBarState, setSideBarState] = useState(sideBarStates.NORMAL);
-    //2664 619008 - victor
 
     // if the viewer state is "show the current active task" and there are no tasks to show
     // set the states of sideBar to normal and taskViwewr to "new task"
