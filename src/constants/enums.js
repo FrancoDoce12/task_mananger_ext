@@ -15,6 +15,7 @@ const viewerStates = {
     SHOW_CURRENT_ACTIVE_TASK: "show current active task",
     NEW_TASK: "new task",
     TASK_FORM: "task form",
+    CHILD_FORM: "child form",
     SHOW_SELECTED_TASK: "show selected task",
 };
 

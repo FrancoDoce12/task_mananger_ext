@@ -1,19 +1,24 @@
 import SideBarTask from "./taskComponents/SideBarTask";
-import { TaskContext, FunctionalityContext } from "./sharedComponents";
-import { useContext, useState } from "react";
+import { FunctionalityContext } from "./sharedComponents";
+import { useContext, useMemo } from "react";
+import { useTasks } from "../../hooks/useTasks";
 
 
 const SideBar = ({ state }) => {
 
-    const [contexTasks] = useContext(TaskContext)
+    const { getFatherTasks, tasks } = useTasks();
+
+    const contextTasks = useMemo(() => {
+        return (getFatherTasks()).tasks
+    }, [tasks]);
 
     // list of the components of the list
-    const tasksComponents = []
+    const tasksComponents = [];
 
     // load the tasks from the context to its components
-    for (let i = 0; i < contexTasks.length; i++) {
+    for (let i = 0; i < contextTasks.length; i++) {
         // we use the SideBarTask component
-        const task = contexTasks[i]
+        const task = contextTasks[i]
         tasksComponents.push(
             <SideBarTask
                 task={task} key={task.id} id={task.id}>

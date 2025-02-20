@@ -17,7 +17,7 @@ export const useMainContainerLogic = () => {
 
     // states are: "normal", "new task", "no tasks"
     let [sideBarState, setSideBarState] = useState(sideBarStates.NORMAL);
-
+    //2664 619008 - victor
 
     // if the viewer state is "show the current active task" and there are no tasks to show
     // set the states of sideBar to normal and taskViwewr to "new task"
@@ -40,11 +40,18 @@ export const useMainContainerLogic = () => {
         }
     }, [taskViewerState, selectedTask]);
 
+    const setChildForm = useMemo(() => {
+        return () => {
+            setViewerState(viewerStates.CHILD_FORM);
+        };
+    }, [taskViewerState]);
+
     useMemo(() => {
         // used to let children communicate with other children by their father
         refObject.setViewerState = setViewerState;
         refObject.setSideBarState = setSideBarState;
         refObject.setSelectedTask = setSelectedTaskToShow;
+        refObject.setChildForm = setChildForm;
 
         refObject.taskViewerState = taskViewerState;
         refObject.sideBarState = sideBarState;

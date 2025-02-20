@@ -233,7 +233,7 @@ export const TaskService = {
         const foundTaskIndexes = [];
 
         currentTasks.forEach((task, index) => {
-            if (task.parentId == null) {
+            if (task.fatherId == null) {
                 foundTasks.push(currentTasks[index]);
                 foundTaskIndexes.push(index);
             };

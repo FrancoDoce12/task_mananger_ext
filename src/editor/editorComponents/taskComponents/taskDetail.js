@@ -4,7 +4,7 @@ import { useTasks } from "../../../hooks/useTasks";
 
 const TaskDetail = ({ task }) => {
 
-    const { updateTask } = useTasks();
+    const { updateTask, refObject } = useTasks();
 
     const [taskChanged, setTaskChanged] = useState({});
 
@@ -12,7 +12,6 @@ const TaskDetail = ({ task }) => {
         if (value) return value;
     };
 
-    
     const handleChange = ({ target: { name, value } }) => {
         setTaskChanged({ ...taskChanged, [name]: value });
     };
@@ -53,6 +52,7 @@ const TaskDetail = ({ task }) => {
             <button onClick={handleUpdateField} id="endDate">Done</button>
 
             <button type="submit">Save Changes</button>
+            <button onClick={refObject.setChildForm} >Create Child Task</button>
         </form>
 
     )
