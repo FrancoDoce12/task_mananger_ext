@@ -78,30 +78,16 @@ export const TaskService = {
     addTask: async function (newTask, currentTasks, refObject) {
         const normTask = await this.normalizeTask(newTask, currentTasks, refObject);
         const updatedTasks = [...currentTasks, normTask];
+
+        if (normTask.fatherId) {
+            const fatherSelection = this.selectTasksByIds([normTask.fatherId], updatedTasks);
+            updatedTasks[fatherSelection.indexes[0]].childsIds.push(normTask.id);
+        };
+
         await this.saveAllTasks(updatedTasks);
         return updatedTasks;
     },
 
-    assignParent: async function (parentId, childsTasks = [], currentTasks = []) {
-
-        const ids = [];
-        const updates = [];
-        const childsIds = [];
-
-        childsTasks.forEach((childTask) => {
-            childsIds.push(childTask.id);
-            // id of each task to update
-            ids.push(childTask.id);
-            // what to update to each children
-            updates.push({ fatherId: parentId });
-        })
-
-        // adds the parent to update lists
-        ids.push(parentId);
-        updates.push({ childsIds });
-
-        return await this.updateTasks(ids, updates, currentTasks);
-    },
 
     updateTasks: async function (ids = [], updates = [], currentTasks = []) {
 
