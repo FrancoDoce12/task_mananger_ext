@@ -5,8 +5,11 @@ module.exports = {
     "./build/**/*.{html,js}"   // Escanea los archivos generados en build
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans_custom: ['Work Sans', 'sans-serif', 'system-ui'],
+      },
+    },
   },
   plugins: [],
 }
-
