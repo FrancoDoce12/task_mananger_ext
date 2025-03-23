@@ -1,5 +1,5 @@
 import { useTasks } from '../../../hooks/useTasks';
-
+import IsActiveButton from './isActiveButton';
 /**
  * Displays an individual task in the sidebar with activation toggle.
  * @param {Object} props - Component props
@@ -11,11 +11,9 @@ const SideBarTask = ({ task, id }) => {
     const { toggleTask, setTaskToShow } = useTasks()
 
     return (
-        <li key={id}>
-            <h5 onClick={() => { setTaskToShow(task) }} >{task.name}</h5>
-            <button onClick={() => { toggleTask(task) }}>
-                {task.isActive ? 'Deactivate' : 'Activate'}
-            </button>
+        <li className='p-2' key={id}>
+            <h5 className='leading-none rounded-full hover:outline hover:outline-[0.1rem] hover:outline-slate-400' onClick={() => { setTaskToShow(task) }} >{task.name}</h5>
+            <IsActiveButton task={task} toggleTask={toggleTask} ></IsActiveButton>
         </li>
     );
 };
