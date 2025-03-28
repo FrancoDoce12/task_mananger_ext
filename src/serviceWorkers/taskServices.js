@@ -108,11 +108,11 @@ export const TaskService = {
         await this.saveAllTasks(newTasks);
 
         return newTasks;
-
     },
 
     updateTask: async function (taskId, update, currentTasks) {
-        return await this.updateTasks([taskId], [update], currentTasks);
+        const validUpdate = this.validateTaskUpdate(update);
+        return await this.updateTasks([taskId], [validUpdate], currentTasks);
     },
 
     getTaskObjById: async function (id) {
@@ -135,6 +135,14 @@ export const TaskService = {
         return result;
     },
 
+    validateTaskUpdate: function (update) {
+        // the only validation right now
+        if (!update.name) {
+            delete update.name;
+        };
+        return update;
+    },
+
     normalizeTask: async function (oldTask, currentTasks, refObject) {
         // validate task
         if (!(oldTask.name)) {
@@ -144,14 +152,16 @@ export const TaskService = {
         // adds an generated id and the default values
         const id = await this.getNextId(refObject);
         // if the task is the first task, make it active, otherwise not
-        const isActive = currentTasks.length == 0
+        const isActive = currentTasks.length == 0;
+        const creationDate = new Date(Date.now()).toISOString().split("T")[0];
         const defaultValues = {
             id,
             description: "",
             isActive,
             fatherId: null,
             childsIds: [],
-            startDate: Date.now(),
+            creationDate,
+            startDate: creationDate,
             endDate: null,
         };
         // overwrite default values with the previus task
