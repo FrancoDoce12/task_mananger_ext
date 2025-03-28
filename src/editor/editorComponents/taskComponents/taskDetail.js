@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTasks } from "../../../hooks/useTasks";
+import InputDetail from "../inputDetails";
 
 
 const TaskDetail = ({ task }) => {
@@ -8,16 +9,17 @@ const TaskDetail = ({ task }) => {
 
     const [taskChanged, setTaskChanged] = useState({});
 
-    const handleValue = (value) => {
-        if (value) return value;
-    };
-
     const handleChange = ({ target: { name, value } }) => {
-        setTaskChanged({ ...taskChanged, [name]: value });
+        setTaskChanged(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = () => {
         updateTask(task, taskChanged);
+    };
+
+    const handleUnset = ({ target: { id } }) => {
+        updateTask(task, { [id]: null });
+        setTaskChanged({ ...task, [id]: null });
     };
 
     const handleUpdateField = ({ target: { id } }) => {
@@ -25,34 +27,59 @@ const TaskDetail = ({ task }) => {
         updateTask(task, { [id]: taskChanged[id] });
     };
 
-    const completeTask = {...task, ...taskChanged};
+    const completeTask = { ...task, ...taskChanged };
 
     return (
 
-        <form onSubmit={handleSubmit}>
+        <form className="form-style" onSubmit={handleSubmit}>
 
-            <label htmlFor="name">task Goal/Name</label>
-            <input id="name" name="name" type="text" value={handleValue(completeTask.name)} placeholder="Find a job!"
-                onChange={handleChange}></input>
-            <button onClick={handleUpdateField} id="name">Done</button>
+            <InputDetail
+                handleUpdate={handleUpdateField}
+                required={true}
+                inputNameId="name"
+                inputType="text"
+                labelText="Name"
+                onChange={handleChange}
+                placeholder={"Make Somthing Greate!"}
+                value={(completeTask.name)}
+            />
 
-            <label htmlFor="description">Description</label>
-            <input id="description" name="description" type="text" value={handleValue(completeTask.description)} placeholder="deliver resumes at....."
-                onChange={handleChange}></input>
-            <button onClick={handleUpdateField} id="description">Done</button>
+            <InputDetail
+                handleUpdate={handleUpdateField}
+                inputNameId="description"
+                inputType="text"
+                labelText="Description"
+                onChange={handleChange}
+                placeholder={"To make Somthing Greate, we need little steps.."}
+                value={(completeTask.description)}
+            />
 
-            <label htmlFor="start date">Start Date</label>
-            <input id="start date" name="startDate" type="date" value={handleValue(completeTask.startDate)}
-                onChange={handleChange}></input>
-            <button onClick={handleUpdateField} id="startDate">Done</button>
+            <InputDetail
+                handleUpdate={handleUpdateField}
+                inputNameId="startDate"
+                inputType="date"
+                labelText="Start Date"
+                onChange={handleChange}
+                unset={true}
+                onUnset={handleUnset}
+                max={completeTask.endDate}
+                value={completeTask.startDate}
+            />
 
-            <label htmlFor="End date">End Date</label>
-            <input id="End date" name="endDate" type="date" value={handleValue(completeTask.endDate)}
-                onChange={handleChange}></input>
-            <button onClick={handleUpdateField} id="endDate">Done</button>
+            <InputDetail
+                handleUpdate={handleUpdateField}
+                inputNameId="endDate"
+                inputType="date"
+                labelText="End Date"
+                onChange={handleChange}
+                unset={true}
+                onUnset={handleUnset}
+                min={completeTask.startDate}
+                value={completeTask.endDate}
+            />
 
-            <button type="submit">Save Changes</button>
-            <button onClick={refObject.setChildForm} >Create Child Task</button>
+            <button className="form-submit-button" type="submit">Save Changes</button>
+            <button className="form-submit-button" onClick={refObject.setChildForm} >Create Child Task</button>
         </form>
 
     )

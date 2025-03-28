@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { FunctionalityContext } from '../sharedComponents';
 import { useTasks } from '../../../hooks/useTasks';
+import BaseInput from '../baseInput';
 
 const formStatesKeys = {
     INITIAL_STATE: 'in progress',
@@ -42,26 +43,52 @@ const TaskForm = ({ fatherId = null }) => {
         setTaskData({ ...taskData, [name]: value });
     };
 
+    const handleUnset = ({ target: { name, value } }) => {
+        setTaskData({ ...taskData, [name]: undefined });
+    };
+
     return (
-        <form onSubmit={handleSubmit}>
 
-            <label htmlFor="name">task Goal/Name</label>
-            <input required id="name" name="name" type="text" placeholder="Find a job!"
-                onChange={handleChange}></input>
+        <form className="form-style" onSubmit={handleSubmit}>
 
-            <label htmlFor="description">Description</label>
-            <input id="description" name="description" type="text" placeholder="deliver resumes at....."
-                onChange={handleChange}></input>
+            <BaseInput
+                required={true}
+                inputNameId="name"
+                inputType="text"
+                labelText="Name"
+                onChange={handleChange}
+                placeholder={"Make Somthing Greate!"}
+            />
 
-            <label htmlFor="start date">Start Date</label>
-            <input id="start date" name="startDate" type="date"
-                onChange={handleChange}></input>
+            <BaseInput
+                inputNameId="description"
+                inputType="text"
+                labelText="Description"
+                onChange={handleChange}
+                placeholder={"To make Somthing Greate, we need little steps.."}
+            />
 
-            <label htmlFor="End date">End Date</label>
-            <input id="End date" name="endDate" type="date"
-                onChange={handleChange}></input>
+            <BaseInput
+                inputNameId="startDate"
+                inputType="date"
+                labelText="Start Date"
+                onChange={handleChange}
+                unset={true}
+                onUnset={handleUnset}
+                max={taskData.endDate}
+            />
 
-            <button type="submit">Done</button>
+            <BaseInput
+                inputNameId="endDate"
+                inputType="date"
+                labelText="End Date"
+                onChange={handleChange}
+                unset={true}
+                onUnset={handleUnset}
+                min={taskData.startDate}
+            />
+
+            <button className="form-submit-button" type="submit">Save Changes</button>
         </form>
     );
 };
