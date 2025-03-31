@@ -3,7 +3,7 @@ import BaseInput from "./baseInput";
 const InputDetail = ({ labelText, inputType, inputNameId, handleUpdate, children, onUnset = () => { }, unset = false, tag: Tag = "input", ...restProps }) => {
 
 
-    const saveButton = <button className="save-input-button" onClick={handleUpdate} id={inputNameId}>Save</button>;
+    const saveButton = <button className="save-input-button" key={`${inputNameId}-save`} onClick={handleUpdate} id={inputNameId}>Save</button>;
 
 
     return (
