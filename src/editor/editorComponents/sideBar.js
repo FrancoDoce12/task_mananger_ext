@@ -37,9 +37,9 @@ const SideBar = ({ state }) => {
 
 
     return (
-        <aside className="flex-col w-2/12 text-center bg-violet-500">
-            <h2>Tasks</h2>
-            <nav className="flex-col">
+        <aside className="w-2/12 text-center shadow-lg bg-slate-100 ">
+            <h2 className="text-2xl p-3" >Tasks</h2>
+            <nav className="text-lg list-none ">
                 {tasksComponents}
             </nav>
         </aside>
@@ -56,7 +56,7 @@ const CreateNewTaskTab = ({ id }) => {
     }
 
     return (
-        <li key={id}>
+        <li className="p-2"  key={id}>
             <button onClick={handleClick}>
                 <h5>Add New Task +</h5>
             </button>

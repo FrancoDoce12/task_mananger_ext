@@ -6,8 +6,8 @@ const BaseInput = (
         <button className="save-input-button" key={`${inputNameId}-unset`} onClick={onUnset}>Unset</button> :
         <></>
 
-        // if it's falsy, make it a empty string
-        value = value? value : "";
+        // if it's null, make it an empty string
+        if (value === null) {value = ""};
 
     return (
         <div className="input-container">
