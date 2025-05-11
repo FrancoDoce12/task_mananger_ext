@@ -5,7 +5,7 @@ import InputDetail from "../inputDetails";
 
 const TaskDetail = ({ task }) => {
 
-    const { updateTask, refObject } = useTasks();
+    const { updateTask, refObject, deleteTask } = useTasks();
 
     const [taskChanged, setTaskChanged] = useState({});
 

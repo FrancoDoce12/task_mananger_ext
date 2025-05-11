@@ -275,5 +275,108 @@ export const TaskService = {
 
     },
 
+    /**
+    * Function: uniteSelection
+    * 
+    * Description:
+    * Merges selections by adding indexes and tasks from SelectionB into SelectionA. 
+    * Modifies SelectionA (does not return a new selection).
+    * 
+    * Parameters:
+    * @param {Selection} selectionA - Selection to be modified 
+    * @param {Selection} selectionB - Selection to copy from (remains unmodified)
+    * 
+    */
+    uniteSelection: function (selectionA, selectionB) {
+        const indexes = [...(selectionA.indexes ?? [])];
+        const tasks = [...(selectionA.tasks ?? [])];
+
+        for (const [i, taskIndex] of selectionB.indexes.entries()) {
+            const task = selectionB.tasks[i];
+
+            if (taskIndex === null || task === null) continue;
+
+            if (indexes.includes(taskIndex)) continue;
+
+            indexes.push(taskIndex);
+            tasks.push(task);
+        };
+
+        return { indexes, tasks, err: false };
+    },
+
+    selectChildTasks: function (task, currentTasks) {
+        return this.selectTasksByIds(task.childsIds, currentTasks);
+    },
+
+    // select task childs with their childs, exept own tasks 
+    selectTreeTasks: function (mainTask, currentTasks) {
+        const levelSearch = 5;
+        let selectionChildTasks = this.selectChildTasks(mainTask, currentTasks);
+        let totalTreeSelection = selectionChildTasks;
+
+        for (let i = 0; i < levelSearch; i++) {
+            let levelSelection = { indexes: [], tasks: [], err: false };
+            for (let j = 0; j < selectionChildTasks.indexes.length; j++) {
+                const index = selectionChildTasks.indexes[j];
+                const task = currentTasks[index];
+                const childTasks = this.selectChildTasks(task, currentTasks);
+                levelSelection = this.uniteSelection(levelSelection, childTasks);
+            };
+            totalTreeSelection = this.uniteSelection(totalTreeSelection, levelSelection);
+            selectionChildTasks = levelSelection;
+        };
+
+        return totalTreeSelection;
+    },
+
+    // selects the complete task childs and own task
+    selectCompleteTasksByIds: function (ids, currentTasks) {
+
+        // takes the tasks
+        const commonSelection = this.selectTasksByIds(ids, currentTasks);
+        const tasks = commonSelection.tasks;
+
+        // starts with an empty selection
+        let completeSelection = {
+            indexes: [],
+            tasks: [],
+            err: false
+        };
+
+        // selects all the tasks and their childs task too
+        tasks.forEach((task => {
+            const newSelection = this.selectTreeTasks(task, currentTasks);
+            completeSelection = this.uniteSelection(completeSelection, newSelection);
+        }));
+
+        return this.uniteSelection(commonSelection, completeSelection);
+    },
+
+    deleteSelection: async function (selection, currentTasks) {
+
+        const newTasks = [];
+        // create a new list without the elements of the selection
+        for (let i = 0; i < currentTasks.length; i++) {
+            // if the index is not included in the selection list
+            if (!(selection.indexes.includes(i))) {
+                // add it to a the new list
+                newTasks.push(currentTasks[i]);
+            };
+        };
+
+        // update the tasks list on chrome storage system
+        await this.saveAllTasks(newTasks);
+
+        // return the new tasks list
+        return newTasks;
+    },
+
+    deleteTasks: async function (ids, currentTasks) {
+
+        const completeSelection = this.selectCompleteTasksByIds(ids, currentTasks);
+        const newTaskList = await this.deleteSelection(completeSelection, currentTasks);
+        return newTaskList;
+    },
 };
 

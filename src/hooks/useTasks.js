@@ -69,5 +69,12 @@ export const useTasks = () => {
             const updatedTasks = (await TaskService.updateTask(task.id, update, tasks));
             setTasks(updatedTasks);
         },
+
+        deleteTask: async (task) => {
+            const newTasks = await TaskService.deleteTasks([task.id], tasks);
+            if (newTasks) { setTasks(newTasks); }
+            else { console.error(`Error Deleting Task:`, task); };
+        },
+
     };
 };
