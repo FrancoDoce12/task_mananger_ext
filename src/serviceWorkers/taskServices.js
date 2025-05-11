@@ -72,7 +72,7 @@ export const TaskService = {
         return result || 0;
     },
 
-    saveAllTasks: async function (tasks)  {
+    saveAllTasks: async function (tasks) {
         return await this.setProperties({ [dataKeyWords.TASKS_KEY]: tasks });
     },
 
@@ -184,14 +184,14 @@ export const TaskService = {
     * @returns {Selection} Result object with partial matches and error info
     * @property {Array<Task|null>} tasks - Matched tasks with `null` values for missing IDs
     * @property {Array<number|null>} indexes - Original indexes with `null` for missing IDs
-    * @property {Err|false} error - Error details object if any IDs missing, `false` if all found
+    * @property {SelectionError|false} err - Error details object if any IDs missing, `false` if all found
     */
     selectTasksByIds: function (ids = [], currentTasks = []) {
 
         const foundTasks = [];
         const foundTaskIndexes = [];
         const idsNotFound = [];
-        let error = false;
+        let err = false;
 
 
         ids.forEach(id => {
@@ -199,7 +199,7 @@ export const TaskService = {
 
             if (index == -1) {
                 console.error(`Task does not found with id: ${id}`);
-                error = true;
+                err = true;
                 idsNotFound.push(id);
 
                 foundTasks.push(null);
@@ -210,8 +210,8 @@ export const TaskService = {
             };
         });
 
-        if (error) {
-            error = {
+        if (err) {
+            err = {
                 msg: `The ids ${idsNotFound.join(", ")} were not found`,
                 idsNotFound
             };
@@ -220,7 +220,7 @@ export const TaskService = {
         return {
             tasks: foundTasks,
             indexes: foundTaskIndexes,
-            error
+            err
         };
 
     },
@@ -239,6 +239,7 @@ export const TaskService = {
         return {
             tasks: foundTasks,
             indexes: foundTaskIndexes,
+            err: false
         };
     },
 
@@ -261,6 +262,7 @@ export const TaskService = {
         return {
             tasks: activeTasks,
             indexes: activeIndexes,
+            err: false
         }
 
     },
