@@ -131,14 +131,14 @@ const useNodesLogic = () => {
             }
         },
 
-        getFamilyNodesAndEdges: function (foatherTask, maxLevel = 5) {
+        getFamilyNodesAndEdges: function (fatherTask, maxLevel = 5) {
             const nodeTypes = {
                 mainNode: MainNode,
                 description: DescriptionNode
             }
-            const fatherNode = this.createNodeByTask(foatherTask, 'mainNode', { x: 10, y: 22 });
+            const fatherNode = this.createNodeByTask(fatherTask, 'mainNode', { x: 10, y: 22 });
 
-            const childsSelection = getChildsSelection(foatherTask);
+            const childsSelection = getChildsSelection(fatherTask);
 
             const childNodes = [];
             childsSelection.tasks.forEach((task) => {
@@ -147,7 +147,7 @@ const useNodesLogic = () => {
 
             const edges = [];
             childsSelection.tasks.forEach((task) => {
-                edges.push(this.creteEdges(task, foatherTask));
+                edges.push(this.creteEdges(task, fatherTask));
             });
 
             return {
