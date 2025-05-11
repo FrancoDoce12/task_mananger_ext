@@ -79,7 +79,8 @@ const TaskDetail = ({ task }) => {
             />
 
             <button className="form-submit-button" type="submit">Save Changes</button>
-            <button className="form-submit-button" onClick={refObject.setChildForm} >Create Child Task</button>
+            <button className="form-submit-button" type="button" onClick={refObject.setChildForm} >Create Child Task</button>
+            <button className="form-submit-button" type="button" onClick={() => { deleteTask(task) }} >Delete Task</button>
         </form>
 
     )
