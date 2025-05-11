@@ -127,6 +127,14 @@ export const TaskService = {
         return tasks[0];
     },
 
+    getTaskById: function (id, currentTasks) {
+        const selection = this.selectTasksByIds([id], currentTasks);
+        if (!(selection.err)) {
+            return selection.tasks[0];
+        };
+        return selection.err;
+    },
+
     getNextId: async function (refObject) {
         const result = await this.getIdCounter();
         const nextId = result + 1;
