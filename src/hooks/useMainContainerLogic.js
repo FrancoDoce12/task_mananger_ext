@@ -35,6 +35,10 @@ export const useMainContainerLogic = () => {
             if (task) {
                 setSelectedTask(task);
                 setViewerState(viewerStates.SHOW_SELECTED_TASK);
+
+                if (refObject.showTaskTreeViewInitialaized) {
+                    refObject.changeTreeViewTask(task);
+                };
             };
         }
     }, [taskViewerState, selectedTask]);

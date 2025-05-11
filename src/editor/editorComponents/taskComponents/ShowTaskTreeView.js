@@ -1,18 +1,30 @@
 import '@xyflow/react/dist/style.css';
 import '../../../tailwind.css'
 import { ReactFlow, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
-import { useCallback } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import useNodesLogic from '../../../hooks/useNodesLogic';
+import { FunctionalityContext } from '../sharedComponents';
 
 
 const ShowTaskTreeView = ({ task }) => {
 
     const nodesHook = useNodesLogic();
+    const refObject = useContext(FunctionalityContext);
 
     const { initialEdges, initialNodes, nodeTypes } = nodesHook.getFamilyNodesAndEdges(task);
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+    function changeTask(task) {
+        const { initialEdges, initialNodes, nodeTypes } = nodesHook.getFamilyNodesAndEdges(task);
+        setNodes(initialNodes);
+        setEdges(initialEdges);
+    };
+
+    useMemo((() => { refObject.changeTreeViewTask = changeTask }), [nodes, edges]);
+
+    useMemo((() => { refObject.showTaskTreeViewInitialaized = true; }), []);
 
     const onConnect = useCallback(
         (params) => setEdges((eds) => addEdge(params, eds)),
