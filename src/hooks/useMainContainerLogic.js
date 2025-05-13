@@ -6,14 +6,22 @@ export const useMainContainerLogic = () => {
 
     const { tasks, refObject, getActiveTask } = useTasks();
 
-    let taskToShow = useMemo(() => {
-        return getActiveTask();
-    }, [tasks]);
-
     // states are: "show current active task", "new task", "task form", "show selected task"
     let [taskViewerState, setViewerState] = useState(viewerStates.SHOW_CURRENT_ACTIVE_TASK);
 
-    let [selectedTask, setSelectedTask] = useState({});
+    let [selectedTask, setSelectedTask] = useState(null);
+
+    // this var acts as the central display decision-maker while handling
+    // both default behavior and user interactions.
+    let taskToShow = useMemo(() => {
+        const activeTask = getActiveTask();
+
+        // once an active task is defined, it becomes the selected task
+        if (activeTask && !selectedTask) {
+            setSelectedTask(activeTask);
+        };
+        return activeTask;
+    }, [tasks]);
 
     // states are: "normal", "new task", "no tasks"
     let [sideBarState, setSideBarState] = useState(sideBarStates.NORMAL);
@@ -27,8 +35,8 @@ export const useMainContainerLogic = () => {
     // always have to show a component with the posibility of create a new task
     if (taskViewerState != viewerStates.NEW_TASK) { sideBarState = sideBarStates.NEW_TASK; };
 
-    if (taskViewerState == viewerStates.SHOW_SELECTED_TASK) { taskToShow = selectedTask; };
-
+    // the selected task has priority over default tasks assinged before
+    if (selectedTask) { taskToShow = selectedTask; };
 
     const setSelectedTaskToShow = useMemo(() => {
         return (task) => {
