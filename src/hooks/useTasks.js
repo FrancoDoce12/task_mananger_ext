@@ -42,8 +42,19 @@ export const useTasks = () => {
             return refObject.setSelectedTask(task);
         },
 
-        // TODO: HET MAIN TASK
-
+        /**
+         * Retrieves the currently active task using the following priority:
+         * 1. Returns the first task from `refObject.activeTasksSelection.tasks` (if available).
+         * 2. Falls back to the first task in the `tasks` array if no active selection exists.
+         * 
+         * @returns {Task | undefined} 
+         *   - A `Task` object if either:
+         *     - The active task selection exists, or
+         *     - The `tasks` array is non-empty.
+         *   - `undefined` if both:
+         *     - No active task selection exists, and
+         *     - The `tasks` array is empty.
+         */
         getActiveTask: () => {
             const activeTask = refObject.activeTasksSelection?.tasks?.[0];
             if (!activeTask) {
