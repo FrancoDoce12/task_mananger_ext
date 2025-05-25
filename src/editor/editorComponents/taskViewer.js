@@ -3,6 +3,7 @@ import CreateNewTask from "./taskComponents/CreateNewTask";
 import TaskForm from "./taskComponents/TaskForm";
 import TaskDetail from "./taskComponents/taskDetail";
 import { viewerStates } from "../../constants/enums";
+import { ReactFlowProvider } from "@xyflow/react";
 
 const TaskViewer = ({ state, task }) => {
 
@@ -18,7 +19,7 @@ const TaskViewer = ({ state, task }) => {
             <div className="view-container">
                 <TaskForm fatherId={task.id} />
             </div>
-            );
+        );
     }
     else if (state == viewerStates.NEW_TASK || !task) {
         return (
@@ -31,12 +32,14 @@ const TaskViewer = ({ state, task }) => {
         // if we get here, that means that at least there are one or more tasks
         return (
             <div className="view-container">
-                <ShowTaskTreeView
-                    task={task}>
-                </ShowTaskTreeView>
-                <TaskDetail
-                    task={task}>
-                </TaskDetail>
+                <ReactFlowProvider>
+                    <ShowTaskTreeView
+                        task={task}>
+                    </ShowTaskTreeView>
+                    <TaskDetail
+                        task={task}>
+                    </TaskDetail>
+                </ReactFlowProvider>
             </div>
         );
     }
