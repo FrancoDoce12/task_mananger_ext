@@ -87,5 +87,9 @@ export const useTasks = () => {
             else { console.error(`Error Deleting Task:`, task); };
         },
 
+        orderTasksByStartDate: (tasks) => {
+            return TaskService.orderTasksByStartDate(tasks);
+        },
+
     };
 };

@@ -378,5 +378,16 @@ export const TaskService = {
         const newTaskList = await this.deleteSelection(completeSelection, currentTasks);
         return newTaskList;
     },
+
+    orderTasksByStartDate: function (tasks) {
+        const taskSorted = [...tasks];
+
+        taskSorted.sort((a, b) => {
+            const aDate = new Date(a.startDate);
+            const bDate = new Date(b.startDate);
+            return (aDate - bDate);
+        });
+        return taskSorted;
+    },
 };
 
