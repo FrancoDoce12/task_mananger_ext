@@ -309,6 +309,10 @@ export const TaskService = {
         return this.selectTasksByIds(task.childsIds, currentTasks);
     },
 
+    selectFatherTask: function (task, currentTasks) {
+        return this.selectTasksByIds([task.fatherId], currentTasks);
+    },
+
     // select task childs with their childs, exept own tasks 
     selectTreeTasks: function (mainTask, currentTasks) {
         const levelSearch = 5;

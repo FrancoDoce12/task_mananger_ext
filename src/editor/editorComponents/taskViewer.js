@@ -31,7 +31,7 @@ const TaskViewer = ({ state, task }) => {
     else if (state == viewerStates.SHOW_SELECTED_TASK || state == viewerStates.SHOW_CURRENT_ACTIVE_TASK) {
         // if we get here, that means that at least there are one or more tasks
         return (
-            <div className="view-container">
+            <div style={{ with: "100%", height: "100%" }} className="view-container">
                 <ReactFlowProvider>
                     <ShowTaskTreeView
                         task={task}>

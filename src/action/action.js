@@ -1,3 +1,4 @@
+import '../tailwind.css';
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import Button from "./actionButton";

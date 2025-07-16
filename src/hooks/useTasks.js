@@ -67,6 +67,11 @@ export const useTasks = () => {
             return TaskService.selectTasksByIds(fatherTask.childsIds, tasks);
         },
 
+        getFatherTask: (task) => {
+            const selection = TaskService.selectTasksByIds([task.fatherId], tasks);
+            return selection.tasks[0];
+        },
+
         toggleTask: async (task) => {
             const updatedTasks = await TaskService.updateTask(
                 task.id,

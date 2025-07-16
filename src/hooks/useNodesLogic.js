@@ -19,6 +19,19 @@ const mesureChildNode = (name) => {
 
 }
 
+const mesureFatherRefNode = (fatherTask) => {
+    // defined mesurments
+    const padding = 10;
+
+    // height measures
+    const microTextHeight = (1.25 / 0.875);
+
+    // mesurments
+    const height = measureNodeHeight(2, microTextHeight, padding);
+    const width = measureNodeWidth(fatherTask.name, padding);
+
+    return { height, width };
+};
 
 const mesureMainNode = () => {
     // defined mesurments
@@ -110,13 +123,31 @@ const DescriptionNode = ({ data: { task, bounds }, }) => {
     )
 }
 
-const RootNode = ({ data }) => { };
+const FatherRefNode = ({ data }) => {
 
-const ChildNode = ({ data }) => {
+    const { setSelectedTask } = useTasks();
+
     const task = data.task;
 
     return (
-        <div className="flex flex-row node-base">
+        <div onClick={() => setSelectedTask(task)} className="flex flex-row node-base secundary-node">
+            <h2 className="ref-text" >{task.name}</h2>
+            <p className="ref-text suspensive-dots">...</p>
+            <Handle type="target" position={Position.Bottom}></Handle>
+        </div>
+    )
+};
+
+const RootNode = ({ data }) => { };
+
+const ChildNode = ({ data }) => {
+
+    const { setSelectedTask } = useTasks();
+
+    const task = data.task;
+
+    return (
+        <div onClick={() => setSelectedTask(task)} className="flex flex-row node-base">
             <Handle type="target" id={`${task.id}-target`} position={Position.Top}></Handle>
             <h2>{task.name}</h2>
             <Handle type="source" position={Position.Bottom}></Handle>
@@ -175,6 +206,9 @@ const MainNode = ({ data }) => {
                 <Handle id={`${task.id}-child-source`} type="source" position={Position.Bottom} >
                 </Handle>
 
+                <Handle id={`${task.id}-ref-source`} type="source" position={Position.Top} >
+                </Handle>
+
             </div>
         </div>
     )
@@ -201,6 +235,10 @@ const useNodesLogic = () => {
             return this.createNodeByTask(task, "childNode", position);
         },
 
+        createFatherRefNode: function (fatherTask, position = { x: 0, y: 0 }) {
+            return this.createNodeByTask(fatherTask, "fatherRefNode", position);
+        },
+
         creteEdges: function (sourceTask, targetTask) {
             //source: `${sourceTask.id}-child-source`,
             //target: `${targetTask.id}-target`,
@@ -212,11 +250,32 @@ const useNodesLogic = () => {
             };
         },
 
-        getTreeNodesAndEdges: function (fatherTask, maxLevel = 5) {
+        createRefNodeEdge: function (mainTask, refTask) {
+            return {
+                source: `${mainTask.id}`,
+                target: `${refTask.id}`,
+                sourceHandle: `${mainTask.id}-ref-source`,
+                id: (`edge-${mainTask.id}-${refTask.id}`),
+            };
+        },
+
+        /**
+         * 
+         * @description Create the nodes's stucture and mesurments to show on react flow view port
+         * 
+         * @param {Task} focusTask 
+         * @param {Number} maxLevel unused param
+         * @returns 
+         */
+
+        getTreeNodesAndEdges: function (focusTask, maxLevel = 5) {
+
+
             const nodeTypes = {
                 mainNode: MainNode,
                 description: DescriptionNode,
                 childNode: ChildNode,
+                fatherRefNode: FatherRefNode
             };
 
 
@@ -226,13 +285,13 @@ const useNodesLogic = () => {
             const verticalPadding = 20;
             const horizontalPadding = 10;
             // measure Main Node size
-            const fatherSize = mesureMainNode();
+            const focusNodeSize = mesureMainNode();
 
-            const fatherPosition = { x: (-fatherSize.width / 2), y: (-fatherSize.height / 2) };
+            const focusPosition = { x: -(focusNodeSize.width / 2), y: -(focusNodeSize.height / 2) };
 
-            const fatherNode = this.createNodeByTask(fatherTask, 'mainNode', fatherPosition);
+            const focusNode = this.createNodeByTask(focusTask, 'mainNode', focusPosition);
 
-            const childsSelection = getChildsSelection(fatherTask);
+            const childsSelection = getChildsSelection(focusTask);
             const childTasks = orderTasksByDate(childsSelection.tasks);
 
 
@@ -256,7 +315,7 @@ const useNodesLogic = () => {
 
                 const widthLenght = widthSum[index];
                 const x = -(widthLenght - (totalChildsLenght / 2));
-                const y = (fatherSize.height / 2) + verticalPadding;
+                const y = (focusNodeSize.height / 2) + verticalPadding;
                 const position = { x, y };
 
                 childNodes.push(this.createChildNode(task, position));
@@ -264,11 +323,31 @@ const useNodesLogic = () => {
 
             const edges = [];
             childTasks.forEach((task) => {
-                edges.push(this.creteEdges(fatherTask, task));
+                edges.push(this.creteEdges(focusTask, task));
             });
 
+            // --------- adds the father node -------------
+            const haveFather = !(focusTask.fatherId === null);
+
+            if (haveFather) {
+                const fatherTask = getFatherTask(focusTask);
+
+                // mesurments
+                const fatherNodePadding = 30
+                const mesureFatherNode = mesureFatherRefNode(fatherTask);
+
+                const y = -((focusNodeSize.height / 2) + fatherNodePadding + (mesureFatherNode.height / 2));
+                const x = -(mesureFatherNode.width / 2);
+                const fatherPosition = { x, y };
+
+                const fatherNode = this.createFatherRefNode(fatherTask, fatherPosition);
+
+                childNodes.push(fatherNode);
+                edges.push(this.createRefNodeEdge(focusTask, fatherTask));
+            };
+
             return {
-                initialNodes: [fatherNode, ...childNodes],
+                initialNodes: [focusNode, ...childNodes],
                 initialEdges: edges,
                 nodeTypes,
             }
