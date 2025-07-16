@@ -2,8 +2,10 @@ import '../tailwind.css'
 import { TaskContext, FunctionalityContext } from "./editorComponents/sharedComponents"
 import MainContainer from "./editorComponents/mainContainer";
 import { useState, useEffect, useRef, useMemo } from "react"
-import { useTasks } from '../hooks/useTasks';
 import { TaskService } from '../serviceWorkers/taskServices';
+import alarmServices from '../serviceWorkers/alarmServices';
+import { dataKeyWords } from '../constants/enums';
+const { ALARM_DATA_KEY } = dataKeyWords;
 
 const EditorApp = () => {
 
@@ -21,6 +23,8 @@ const EditorApp = () => {
 
             // load the data into the app context
             current.idCounter = await TaskService.getIdCounter()
+
+            current[ALARM_DATA_KEY] = await alarmServices.fetchAlarmData()
             setTasks(tasksData)
         }
         fetchExtencionData()

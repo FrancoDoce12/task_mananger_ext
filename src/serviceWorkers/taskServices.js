@@ -275,6 +275,10 @@ export const TaskService = {
 
     },
 
+    areActiveMainTasks: function (currentTasks) {
+        return Boolean(this.selectActiveMainTasks(currentTasks).tasks[0])
+    },
+
     /**
     * Function: uniteSelection
     * 

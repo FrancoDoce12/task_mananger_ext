@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { TaskContext, FunctionalityContext } from '../editor/editorComponents/sharedComponents.js';
 import { TaskService } from '../serviceWorkers/taskServices';
-
+import alarmServices from '../serviceWorkers/alarmServices.js';
 
 // task schema 
 /**
@@ -79,6 +79,7 @@ export const useTasks = () => {
                 tasks
             );
             setTasks(updatedTasks);
+            alarmServices.checkAlarm(refObject, updatedTasks);
         },
 
         updateTask: async (task, update) => {

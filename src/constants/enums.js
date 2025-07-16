@@ -4,6 +4,9 @@ const dataKeyWords = {
     /** Map of children by parent ID */
     ID_COUNTER_KEY: 'idCounter',
     // CHILDS_BY_PARENT_ID: 'childsByParentId'
+    MAIN_ALARM_KEY: 'main alarm',
+
+    ALARM_DATA_KEY: 'alarmIsSet'
 }
 
 const sideBarStates = {
