@@ -233,7 +233,7 @@ export const TaskService = {
 
     },
 
-    selectFatherTasks: function (currentTasks = []) {
+    selectMainTasks: function (currentTasks = []) {
         const foundTasks = [];
         const foundTaskIndexes = [];
 
@@ -253,8 +253,8 @@ export const TaskService = {
 
 
 
-    selectActiveFatherTasks: function (currentTasks = []) {
-        const { tasks, indexes } = this.selectFatherTasks(currentTasks);
+    selectActiveMainTasks: function (currentTasks = []) {
+        const { tasks, indexes } = this.selectMainTasks(currentTasks);
 
         const activeTasks = [];
         const activeIndexes = [];

@@ -183,7 +183,7 @@ const MainNode = ({ data }) => {
 
 const useNodesLogic = () => {
 
-    const { getChildsSelection, orderTasksByStartDate: orderTasksByDate } = useTasks();
+    const { getChildsSelection, orderTasksByStartDate: orderTasksByDate, getFatherTask } = useTasks();
 
     const reactFlow = useReactFlow();
 

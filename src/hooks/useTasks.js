@@ -30,15 +30,15 @@ export const useTasks = () => {
             setTasks(updatedTasks);
         },
 
-        getFatherTasks: () => {
-            return TaskService.selectFatherTasks(tasks);
+        getMainTasks: () => {
+            return TaskService.selectMainTasks(tasks);
         },
 
         getChildsTasks: (fatherTask) => {
             return TaskService.selectTasksByIds(fatherTask.childsIds, tasks);
         },
 
-        setTaskToShow: (task) => {
+        setSelectedTask: (task) => {
             return refObject.setSelectedTask(task);
         },
 

@@ -11,13 +11,13 @@ const ShowTaskTreeView = ({ task }) => {
     const nodesHook = useNodesLogic();
     const refObject = useContext(FunctionalityContext);
 
-    const { initialEdges, initialNodes, nodeTypes } = nodesHook.getFamilyNodesAndEdges(task);
+    const { initialEdges, initialNodes, nodeTypes } = nodesHook.getTreeNodesAndEdges(task);
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
     function changeTask(task) {
-        const { initialEdges, initialNodes, nodeTypes } = nodesHook.getFamilyNodesAndEdges(task);
+        const { initialEdges, initialNodes, nodeTypes } = nodesHook.getTreeNodesAndEdges(task);
         setNodes(initialNodes);
         setEdges(initialEdges);
     };

@@ -6,10 +6,10 @@ import { useTasks } from "../../hooks/useTasks";
 
 const SideBar = ({ state }) => {
 
-    const { getFatherTasks, tasks } = useTasks();
+    const { getMainTasks, tasks } = useTasks();
 
     const contextTasks = useMemo(() => {
-        return (getFatherTasks()).tasks
+        return (getMainTasks()).tasks
     }, [tasks]);
 
     // list of the components of the list
@@ -56,7 +56,7 @@ const CreateNewTaskTab = ({ id }) => {
     }
 
     return (
-        <li className="p-2"  key={id}>
+        <li className="p-2" key={id}>
             <button onClick={handleClick}>
                 <h5>Add New Task +</h5>
             </button>

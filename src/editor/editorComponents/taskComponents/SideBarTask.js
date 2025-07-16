@@ -8,11 +8,11 @@ import IsActiveButton from './isActiveButton';
  */
 const SideBarTask = ({ task, id }) => {
 
-    const { toggleTask, setTaskToShow } = useTasks()
+    const { toggleTask, setSelectedTask } = useTasks()
 
     return (
         <li className='p-2' key={id}>
-            <h5 className='leading-none rounded-full hover:outline hover:outline-[0.1rem] hover:outline-slate-400' onClick={() => { setTaskToShow(task) }} >{task.name}</h5>
+            <h5 className='leading-none rounded-full hover:outline hover:outline-[0.1rem] hover:outline-slate-400' onClick={() => { setSelectedTask(task) }} >{task.name}</h5>
             <IsActiveButton task={task} toggleTask={toggleTask} ></IsActiveButton>
         </li>
     );

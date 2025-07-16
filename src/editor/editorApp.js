@@ -33,7 +33,7 @@ const EditorApp = () => {
     // childs so it is a good solution to the problem
     current.activeTasksSelection = useMemo(() => {
 
-        return TaskService.selectActiveFatherTasks(tasks)
+        return TaskService.selectActiveMainTasks(tasks)
 
     }, [tasks])
 
