@@ -9,6 +9,8 @@ const dataKeyWords = {
     ALARM_DATA_KEY: 'alarmIsSet'
 }
 
+const NOTIFICATION_ID = "noty"
+
 const sideBarStates = {
     NORMAL: "normal",
     NEW_TASK: "new task"
@@ -22,4 +24,4 @@ const viewerStates = {
     SHOW_SELECTED_TASK: "show selected task",
 };
 
-export { dataKeyWords, viewerStates, sideBarStates };
+export { dataKeyWords, viewerStates, sideBarStates, NOTIFICATION_ID };
