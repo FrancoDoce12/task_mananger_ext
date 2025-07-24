@@ -34,6 +34,13 @@ const alarmServices = {
         return (areActiveMainTasks != refObject[dataKeyWords.ALARM_DATA_KEY]);
     },
 
+    checkCompleteAlarm: async function () {
+        let tasks = await TaskService.getAllTasks();
+        let refObject = {[dataKeyWords.ALARM_DATA_KEY] : await this.fetchAlarmData()};
+
+        this.checkAlarm(refObject, tasks);
+    },
+
     checkAlarm: function (refObject, tasks) {
         let areActiveMainTasks = TaskService.areActiveMainTasks(tasks);
         let alarmNeedChange = this.alarmNeedChange(areActiveMainTasks, refObject);
@@ -44,4 +51,4 @@ const alarmServices = {
 
 }
 
-export default alarmServices
+export default alarmServices;
