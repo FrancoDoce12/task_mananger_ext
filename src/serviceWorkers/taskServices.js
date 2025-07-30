@@ -80,7 +80,7 @@ export const TaskService = {
         const normTask = await this.normalizeTask(newTask, currentTasks, refObject);
         const updatedTasks = [...currentTasks, normTask];
 
-        if (normTask.fatherId) {
+        if (!((normTask.fatherId === null) || (normTask.fatherId === undefined))) {
             const fatherSelection = this.selectTasksByIds([normTask.fatherId], updatedTasks);
             updatedTasks[fatherSelection.indexes[0]].childsIds.push(normTask.id);
         };
