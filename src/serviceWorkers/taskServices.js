@@ -474,6 +474,7 @@ export const TaskService = {
         let tasksSelection = this.selectTasksByIds(ids, currentTasks);
 
         if (tasksSelection.err) {
+            this.printSelectionError(tasksSelection.err);
             tasksSelection = this.cleanSelectionError(tasksSelection);
         };
 
@@ -576,7 +577,7 @@ export const TaskService = {
         };
     },
 
-    cleanSelectionError: function (selection){
+    cleanSelectionError: function (selection) {
 
         let newSelection = this.getNewSelection();
 
@@ -593,7 +594,10 @@ export const TaskService = {
         };
 
         return newSelection;
+    },
 
+    printSelectionError: function (selectionError) {
+        console.error(selectionError.msg);
     },
 
     orderTasksByStartDate: function (tasks) {
