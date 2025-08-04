@@ -8,12 +8,14 @@ const notyServices = {
         let tasks = await TaskService.getAllTasks();
         let activeTasks = TaskService.selectActiveMainTasks(tasks).tasks;
 
-        await this.pushNotyfications(activeTasks, imgUrl, {});
+        await this.pushNotyfications(activeTasks, imgUrl, tasks, {});
     },
 
-    pushNotyfications: async function (activeTasks, imgUrl, settings) {
+    pushNotyfications: async function (activeTasks, imgUrl, tasks, settings) {
+    
         let items = activeTasks.map((task) => {
-            return { title: task.name, message: task.description };
+            let taskMassage = TaskService.getTaskMassage(task, tasks);
+            return { title: task.name, message: taskMassage };
         })
 
         switch (items.length) {

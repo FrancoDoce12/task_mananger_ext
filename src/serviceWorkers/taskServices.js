@@ -34,7 +34,23 @@ import { dataKeyWords } from "../constants/enums";
  * @property {SelectionError|false} err - The error object if the selection get any error selecting items
  */
 
+/**
+ * @typedef {Object} SelectionFatherMap
+ * @property {Array<Task|null>} tasks - The array of each tasks obj selected.
+ * @property {Array<number|null>} indexes Original array positions of the matched tasks,
+ *                              preserving referential integrity to the source collection.
+ *                              Enables direct index-based operations on the parent tasks array.
+ * @property {SelectionError|false} err - The error object if the selection get any error selecting items
+ * @property {Map<Number, Array<Number>>} fatherMap - A father id as key and the childs ids that are connected to this father
+ */
 
+/**
+ * @typedef {Object} UpdatesPayload 
+ * @property {Array<number>} ids - Ids of each task to update.
+ * @property {Array<Object>} updates - the update objects corresponding to each task.
+ */
+
+//fatherMap
 export const TaskService = {
 
 
@@ -90,6 +106,9 @@ export const TaskService = {
         return updatedTasks;
     },
 
+    /**
+     * @returns {Promise<Array<Task>>} The new updated tasks
+     */
 
     updateTasks: async function (ids = [], updates = [], currentTasks = []) {
 
@@ -101,7 +120,7 @@ export const TaskService = {
 
         const newTasks = [...currentTasks];
 
-        for (let i = 0; i <= ids.length; i++) {
+        for (let i = 0; i < ids.length; i++) {
             const index = indexes[i];
             newTasks[index] = { ...tasks[i], ...updates[i] };
         };
@@ -114,6 +133,21 @@ export const TaskService = {
     updateTask: async function (taskId, update, currentTasks) {
         const validUpdate = this.validateTaskUpdate(update);
         return await this.updateTasks([taskId], [validUpdate], currentTasks);
+    },
+
+
+
+    /**
+     * 
+     * @param {UpdatesPayload} updatesPayload the object containing a list of ids, and a list of updates corresponding to each task
+     * @param {Array<Task>} currentTasks The current loaded tasks
+     * @returns {Promise<Array<Task>>} Returns the new updated tasks
+     */
+    validateAndUpdateTasks: async function (updatesPayload, currentTasks) {
+        let validUpdates = this.validateTaskUpdates(updatesPayload.updates);
+
+        return await this.updateTasks(updatesPayload.ids, validUpdates, currentTasks);
+
     },
 
     getTaskObjById: async function (id) {
@@ -145,11 +179,19 @@ export const TaskService = {
     },
 
     validateTaskUpdate: function (update) {
-        // the only validation right now
+        // Prevent updating 'name' if it's empty or undefined
         if (!update.name) {
             delete update.name;
         };
+        // Cannot update the task id
+        if (update.id) {
+            delete update.id;
+        };
         return update;
+    },
+
+    validateTaskUpdates: function (updates) {
+        return (updates.map(update => this.validateTaskUpdate(update)));
     },
 
     normalizeTask: async function (oldTask, currentTasks, refObject) {
@@ -311,33 +353,81 @@ export const TaskService = {
         return { indexes, tasks, err: false };
     },
 
-    selectChildTasks: function (task, currentTasks) {
+    selectChildsFromTasks: function (task, currentTasks) {
         return this.selectTasksByIds(task.childsIds, currentTasks);
+    },
+
+    selectChildsFromSelection: function (fatherSelection, currentTasks) {
+        let childsIds = fatherSelection.tasks.flatMap(task => task.childsIds);
+        return this.selectTasksByIds(childsIds, currentTasks);
     },
 
     selectFatherTask: function (task, currentTasks) {
         return this.selectTasksByIds([task.fatherId], currentTasks);
     },
 
-    // select task childs with their childs, exept own tasks 
-    selectTreeTasks: function (mainTask, currentTasks) {
-        const levelSearch = 5;
-        let selectionChildTasks = this.selectChildTasks(mainTask, currentTasks);
-        let totalTreeSelection = selectionChildTasks;
+    /**
+     * retunrs a selection of the fathers, and a map of the conections with the childs keys
+     * @param {Selection} childsSelection - The selection of childs
+     * @param {Array<Task>} currentTasks Current loaded tasks
+     * @returns {SelectionFatherMap}
+     */
+    selectFathersFromSelection: function (childsSelection, currentTasks) {
 
-        for (let i = 0; i < levelSearch; i++) {
-            let levelSelection = { indexes: [], tasks: [], err: false };
-            for (let j = 0; j < selectionChildTasks.indexes.length; j++) {
-                const index = selectionChildTasks.indexes[j];
-                const task = currentTasks[index];
-                const childTasks = this.selectChildTasks(task, currentTasks);
-                levelSelection = this.uniteSelection(levelSelection, childTasks);
+        let fatherMap = new Map();
+
+        for (let i = 0; i < childsSelection.tasks.length; i++) {
+            let task = childsSelection.tasks[i];
+            if (fatherMap.has(task.fatherId)) {
+                fatherMap.get(task.fatherId).push(task.id);
+            } else {
+                fatherMap.set(task.fatherId, [task.id]);
             };
-            totalTreeSelection = this.uniteSelection(totalTreeSelection, levelSelection);
-            selectionChildTasks = levelSelection;
         };
 
-        return totalTreeSelection;
+        fatherMap.delete(null);
+
+        let fatherIds = [...fatherMap.keys()];
+
+        let fatherSelection = this.selectTasksByIds(fatherIds, currentTasks);
+        fatherSelection.fatherMap = fatherMap;
+
+        return fatherSelection;
+    },
+
+    // select task childs with their childs, exept own tasks 
+    deepSelectChilds: function (task, currentTasks, levelSearch = 5) {
+
+        let childSelection = this.selectChildsFromTasks(task);
+
+        let completeSelection = this.getNewSelection();
+
+        for (let i = 0; i < levelSearch; i++) {
+            let newLevelSelection = this.selectChildsFromSelection(childSelection, currentTasks);
+
+            childSelection = newLevelSelection;
+
+            completeSelection = this.uniteSelection(completeSelection, newLevelSelection);
+        };
+
+        return completeSelection;
+    },
+
+    deepSelectChildsFromSelection: function (selection, currentTasks, levelSearch = 5) {
+
+        let tasks = selection.tasks;
+
+        let completeSelection = this.getNewSelection(); // empty selection
+
+        for (let i = 0; i < tasks.length; i++) {
+            let task = tasks[i];
+
+            let childsSelection = this.deepSelectChilds(task, currentTasks, levelSearch);
+
+            completeSelection = this.uniteSelection(completeSelection, childsSelection);
+        };
+
+        return completeSelection;
     },
 
     // selects the complete task childs and own task
@@ -348,15 +438,11 @@ export const TaskService = {
         const tasks = commonSelection.tasks;
 
         // starts with an empty selection
-        let completeSelection = {
-            indexes: [],
-            tasks: [],
-            err: false
-        };
+        let completeSelection = this.getNewSelection();
 
         // selects all the tasks and their childs task too
         tasks.forEach((task => {
-            const newSelection = this.selectTreeTasks(task, currentTasks);
+            const newSelection = this.deepSelectChilds(task, currentTasks);
             completeSelection = this.uniteSelection(completeSelection, newSelection);
         }));
 
@@ -384,10 +470,107 @@ export const TaskService = {
 
     deleteTasks: async function (ids, currentTasks) {
 
-        const completeSelection = this.selectCompleteTasksByIds(ids, currentTasks);
-        const newTaskList = await this.deleteSelection(completeSelection, currentTasks);
-        return newTaskList;
+        // selects all childs and tasks and delete them all
+        let tasksSelection = this.selectTasksByIds(ids, currentTasks);
+        let childsSelection = this.deepSelectChildsFromSelection(tasksSelection, currentTasks);
+
+        let fatherSelection = this.selectFathersFromSelection(tasksSelection, currentTasks);
+        let fatherUpdets = [];
+        let fatherIds = [];
+
+        for (let i = 0; i < fatherSelection.tasks.length; i++) {
+            let faherTask = fatherSelection.tasks[i];
+            let fatherChildIds = faherTask.childsIds;
+            let childsToEliminate = fatherSelection.fatherMap.get(faherTask.id);
+            let newChildIds = fatherChildIds.filter(childIds => !childsToEliminate.includes(childIds));
+
+            fatherUpdets.push({ childsIds: newChildIds });
+            fatherIds.push(faherTask.id);
+        };
+
+        let updatePayload = this.getNewUpdatePayload(fatherIds, fatherUpdets);
+        currentTasks = await this.validateAndUpdateTasks(updatePayload, currentTasks);
+
+        let unitedDeleteSelection = this.uniteSelection(tasksSelection, childsSelection);
+        let finalTasks = await this.deleteSelection(unitedDeleteSelection, currentTasks);
+        return finalTasks;
     },
+
+    getFirstNotCompleteChild: function (task, tasks, levelSearch = 5) {
+        // level search is how dawn the astk tree should go searching
+
+        let prevNotCompleteTask;
+
+        // first child ids
+        let childsIds = task.childsIds;
+        // first loop, sear for each level
+        for (let i = 0; i < levelSearch; i++) {
+            let childsSelection = this.selectTasksByIds(childsIds, tasks);
+            let levelChildsTasks = childsSelection.tasks;
+
+            // search in order of start date (ascending)
+            let orderLevelchilds = this.orderTasksByStartDate(levelChildsTasks);
+
+            let firstNotCompletedTask = orderLevelchilds.find((task) => {
+                return !(task.isComplete);
+            });
+
+            if (firstNotCompletedTask === undefined) {
+                return prevNotCompleteTask;
+            } else {
+                childsIds = firstNotCompletedTask.childsIds;
+                prevNotCompleteTask = firstNotCompletedTask;
+            };
+        };
+        // if the loop ends and does not find the buttom of the tree, we goona return 
+        // the last not completed tasks funded
+        return prevNotCompleteTask;
+        // this could return undefeined if the task does not have childs
+    },
+
+    getTaskMassage: function async(task, currentTasks) {
+
+        // level of deep search along the tree
+        let taskMassage = task.description;
+
+        let lastNotCompletedChild = this.getFirstNotCompleteChild(task, currentTasks);
+
+        if (lastNotCompletedChild) {
+            taskMassage = (
+                `Current working on: ${lastNotCompletedChild.name}\n${lastNotCompletedChild.description}`
+            );
+        };
+
+        return taskMassage;
+
+    },
+
+    /**
+     * Returns a new selection, if no parameters were put, returns an empty selection
+     * @returns {Selection}
+     */
+    getNewSelection: function (tasks = [], indexes = [], err = false) {
+        return {
+            tasks,
+            indexes,
+            err
+        };
+    },
+
+    /**
+     * 
+     * @param {Array<number>} ids List of ids, 
+     * @param {Array<Object>} updates List of update
+     * @returns {UpdatesPayload} - Updates payload of tasks
+     */
+
+    getNewUpdatePayload: function (ids = [], updates = []) {
+        return {
+            ids,
+            updates
+        };
+    },
+
 
     orderTasksByStartDate: function (tasks) {
         const taskSorted = [...tasks];

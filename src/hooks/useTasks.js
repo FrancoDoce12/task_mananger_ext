@@ -90,8 +90,30 @@ export const useTasks = () => {
 
         deleteTask: async (task) => {
             const newTasks = await TaskService.deleteTasks([task.id], tasks);
-            if (newTasks) { setTasks(newTasks); }
+            if (newTasks) {
+                setTasks(newTasks);
+            }
             else { console.error(`Error Deleting Task:`, task); };
+        },
+
+        /**
+         * Creates the message checking the last child task completed along the tree of childs,
+         * to be shown in the notification "Massages"
+         * @param {Task} task 
+         * @returns {string} "Notification massage"
+         */
+        getTaskMassage: async (task) => {
+
+            // level of deep search along the tree
+            let taskMassage = task.description;
+
+            let lastNotCompletedChild = TaskService.getFirstNotCompleteChild(task, tasks);
+
+            if (lastNotCompletedChild) {
+                taskMassage = `${lastNotCompletedChild.name}\n${lastNotCompletedChild.description}`;
+            };
+
+            return taskMassage;
         },
 
         orderTasksByStartDate: (tasks) => {
