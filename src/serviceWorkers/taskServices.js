@@ -472,6 +472,11 @@ export const TaskService = {
 
         // selects all childs and tasks and delete them all
         let tasksSelection = this.selectTasksByIds(ids, currentTasks);
+
+        if (tasksSelection.err) {
+            tasksSelection = this.cleanSelectionError(tasksSelection);
+        };
+
         let childsSelection = this.deepSelectChildsFromSelection(tasksSelection, currentTasks);
 
         let fatherSelection = this.selectFathersFromSelection(tasksSelection, currentTasks);
@@ -571,6 +576,25 @@ export const TaskService = {
         };
     },
 
+    cleanSelectionError: function (selection){
+
+        let newSelection = this.getNewSelection();
+
+        for (let i = 0; i < selection.tasks.length; i++) {
+            let task = selection.tasks[i];
+            let index = selection.indexes[i];
+
+            if (!(task)) {
+                continue;
+            };
+
+            newSelection.tasks.push(task);
+            newSelection.indexes.push(index);
+        };
+
+        return newSelection;
+
+    },
 
     orderTasksByStartDate: function (tasks) {
         const taskSorted = [...tasks];
