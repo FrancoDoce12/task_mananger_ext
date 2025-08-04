@@ -13,6 +13,10 @@ const TaskDetail = ({ task }) => {
         setTaskChanged(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleCheckBoxChange = ({ target: {name, checked} }) => {
+        setTaskChanged(prev => ({ ...prev, [name]: checked }));
+    };
+
     const handleSubmit = () => {
         updateTask(task, taskChanged);
     };
@@ -31,7 +35,7 @@ const TaskDetail = ({ task }) => {
 
     return (
 
-        <form className="form-style" onSubmit={handleSubmit}>
+        <form className="form-style detail-form-style" onSubmit={handleSubmit}>
 
             <InputDetail
                 handleUpdate={handleUpdateField}
@@ -52,6 +56,15 @@ const TaskDetail = ({ task }) => {
                 onChange={handleChange}
                 placeholder={"To make Somthing Greate, we need little steps.."}
                 value={(completeTask.description)}
+            />
+
+            <InputDetail
+                handleUpdate={handleUpdateField}
+                inputNameId="isComplete"
+                inputType="checkbox"
+                labelText="Complete"
+                checked={completeTask.isComplete}
+                onChange={handleCheckBoxChange}
             />
 
             <InputDetail
@@ -78,9 +91,11 @@ const TaskDetail = ({ task }) => {
                 value={completeTask.endDate}
             />
 
-            <button className="form-submit-button" type="submit">Save Changes</button>
-            <button className="form-submit-button" type="button" onClick={refObject.setChildForm} >Create Child Task</button>
-            <button className="form-submit-button" type="button" onClick={() => { deleteTask(task) }} >Delete Task</button>
+            <div className="form-options-container">
+                <button className="form-submit-button" type="submit">Save Changes</button>
+                <button className="form-submit-button" type="button" onClick={refObject.setChildForm} >Create Child Task</button>
+                <button className="form-submit-button" type="button" onClick={() => { deleteTask(task) }} >Delete Task</button>
+            </div>
         </form>
 
     )

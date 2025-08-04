@@ -30,17 +30,36 @@
     @apply text-slate-700 text-sm
 }
 
-.suspensive-dots {}
-.input-container {
-    @apply flex flex-col items-start justify-center p-2 w-[100%];
+.input-container-row {
+    @apply flex-row justify-start;
 }
+
+.input-container-column {
+    @apply flex-col items-start justify-center;
+}
+
+.base-input-container {
+    @apply flex px-2 w-[100%];
+}
+
+.suspensive-dots {}
+
+
 
 .input-label {
     @apply w-fit font-bold;
 }
 
+.input-check-label {
+    @apply my-auto font-bold;
+}
+
 .input-options-buttons {
     @apply flex flex-row;
+}
+
+.checkBox-input {
+    @apply size-[33px] mx-[0.6rem];
 }
 
 .text-input,
@@ -54,8 +73,18 @@
 }
 
 .form-style {
-    @apply flex items-center flex-col p-2 m-1 min-w-[15rem] w-fit h-fit shadow-lg rounded-[16px];
+    @apply flex flex-col items-center justify-between p-2 m-1 min-w-[15rem] w-fit h-fit shadow-lg rounded-[16px];
 }
+
+.form-options-container {
+    @apply flex flex-col items-center justify-end;
+}
+
+.detail-form-style {
+    @apply m-0 p-1 max-w-full h-full justify-between;
+}
+
+.detail-input {}
 
 .view-container {
     @apply flex flex-row w-[100%] justify-center;

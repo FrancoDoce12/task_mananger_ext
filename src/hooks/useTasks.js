@@ -11,6 +11,7 @@ import alarmServices from '../serviceWorkers/alarmServices.js';
      * @property {string} description - A description of the task.
      * @property {number|null} fatherId - The ID of the parent task, if any.
      * @property {number[]} childsIds - An array of child task IDs.
+     * @property {boolean} isComplete - Indicates whether the task is marked as complete. 
      * @property {Date} creationDate - The Date of the creation of the task (yyyy-mm-dd).
      * @property {Date} startDate - The Date when the task should start (yyyy-mm-dd).
      * @property {Date} endDate - The Date when the task should end or be finished (yyyy-mm-dd).
