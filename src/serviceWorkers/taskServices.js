@@ -79,12 +79,12 @@ export const TaskService = {
     },
 
     // gets the tasks using the getProperty function
-    getAllTasks: async function () {
+    retrieveAllTasksData: async function () {
         const result = await this.getProperty('tasks');
         return result || [];
     },
 
-    getIdCounter: async function () {
+    retrieveIdCounter: async function () {
         const result = await this.getProperty(dataKeyWords.ID_COUNTER_KEY);
         return result || 0;
     },
@@ -151,7 +151,7 @@ export const TaskService = {
     },
 
     getTaskObjById: async function (id) {
-        const result = this.getAllTasks();
+        const result = this.retrieveAllTasksData();
         const { tasks } = this.selectTasksByIds([id], result);
 
         if (tasks.length == 0) {
@@ -160,6 +160,15 @@ export const TaskService = {
         };
 
         return tasks[0];
+    },
+
+    /**
+     * 
+     * @param {Array<Task>} currentTasks 
+     * @returns {Task | undefined}
+     */
+    getActiveMainTask: function (currentTasks) {
+        return this.selectActiveMainTasks(currentTasks).tasks[0];
     },
 
     getTaskById: function (id, currentTasks) {
@@ -171,7 +180,7 @@ export const TaskService = {
     },
 
     getNextId: async function (refObject) {
-        const result = await this.getIdCounter();
+        const result = await this.retrieveIdCounter();
         const nextId = result + 1;
         await this.setProperties({ [dataKeyWords.ID_COUNTER_KEY]: nextId });
         refObject[dataKeyWords.ID_COUNTER_KEY] = nextId;
@@ -295,6 +304,17 @@ export const TaskService = {
         };
     },
 
+    isValidTask: function (task) {
+        return (task?.name && (Number.isFinite(task.id)));
+    },
+
+    taskExistsInContextTasks: function (task, currentTasks) {
+        return (!Boolean(this.selectTasksByIds([task.id], currentTasks).err));
+    },
+
+    isValidAndLoadedTask: function (task, currentTasks) {
+        return (this.isValidTask(task) && this.taskExistsInContextTasks(task, currentTasks));
+    },
 
 
     selectActiveMainTasks: function (currentTasks = []) {

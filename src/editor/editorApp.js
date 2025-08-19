@@ -1,45 +1,40 @@
-import '../tailwind.css'
+import '../tailwind.css';
 import { TaskContext, FunctionalityContext } from "./editorComponents/sharedComponents"
 import MainContainer from "./editorComponents/mainContainer";
 import { useState, useEffect, useRef, useMemo } from "react"
 import { TaskService } from '../serviceWorkers/taskServices';
 import alarmServices from '../serviceWorkers/alarmServices';
-import { dataKeyWords } from '../constants/enums';
+import { dataKeyWords, REF_OBJECT_KEYS } from '../constants/enums';
+const { SET_TASKS_DATA, ID_COUNTER } = REF_OBJECT_KEYS;
 const { ALARM_DATA_KEY } = dataKeyWords;
 
 const EditorApp = () => {
 
-    const [tasks, setTasks] = useState([])
-
+    // main app state??
+    const [tasks, setTasks] = useState([]);
+    // avalible for child comunication
     // used as a ref object to share vars and set functions 
-    const { current } = useRef({})
+    const { current } = useRef({});
+
+    current[SET_TASKS_DATA] = setTasks;
+
 
     // fetch the local extencion data for the first time
-    useEffect(() => {
+    // useEffect(() => {
 
-        const fetchExtencionData = async () => {
+    //     const fetchExtencionData = async () => {
 
-            const tasksData = await TaskService.getAllTasks()
+    //         const tasksData = await TaskService.retrieveAllTasksData()
 
-            // load the data into the app context
-            current.idCounter = await TaskService.getIdCounter()
+    //         // load the data into the app context
+    //         current.idCounter = await TaskService.retrieveIdCounter()
 
-            current[ALARM_DATA_KEY] = await alarmServices.fetchAlarmData()
-            setTasks(tasksData)
-        }
-        fetchExtencionData()
+    //         current[ALARM_DATA_KEY] = await alarmServices.fetchAlarmData()
+    //         setTasks(tasksData)
+    //     }
+    //     fetchExtencionData()
 
-    }, [])
-
-
-    // re calculate vars that depends on the task array
-    // it runs befor the re render of this component and its
-    // childs so it is a good solution to the problem
-    current.activeTasksSelection = useMemo(() => {
-
-        return TaskService.selectActiveMainTasks(tasks)
-
-    }, [tasks])
+    // }, [])
 
 
     return (

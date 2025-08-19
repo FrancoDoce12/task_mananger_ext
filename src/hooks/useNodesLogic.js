@@ -54,9 +54,9 @@ const mesureMainNode = () => {
     return { height, width };
 }
 
-const measureNodeHeight = (nLines, extraElements = 0, padding = 10) => {
+const measureNodeHeight = (nLines, extraElementsHeight = 0, padding = 10) => {
     const lineHeight = 22.5;
-    return (nLines * lineHeight) + extraElements + (padding * 2);
+    return (nLines * lineHeight) + extraElementsHeight + (padding * 2);
 }
 
 const measureNodeWidth = (largerText = "See Description", padding = 10, inlineElementsWidth = 0) => {
@@ -138,8 +138,6 @@ const FatherRefNode = ({ data }) => {
     )
 };
 
-const RootNode = ({ data }) => { };
-
 const ChildNode = ({ data }) => {
 
     const { setSelectedTask } = useTasks();
@@ -217,7 +215,7 @@ const MainNode = ({ data }) => {
 
 const useNodesLogic = () => {
 
-    const { getChildsSelection, orderTasksByStartDate: orderTasksByDate, getFatherTask } = useTasks();
+    const { getChildsFromTask, orderTasksByStartDate, getFatherTask } = useTasks();
 
     const reactFlow = useReactFlow();
 
@@ -267,6 +265,21 @@ const useNodesLogic = () => {
          * @param {Number} maxLevel unused param
          * @returns 
          */
+        centerCamera: function () {
+            // set viwe port into the center
+            reactFlow.setCenter(0, 0, { duration: 0, zoom: 1 });
+        },
+
+        getNodesTypes: function () {
+            return {
+                mainNode: MainNode,
+                description: DescriptionNode,
+                childNode: ChildNode,
+                fatherRefNode: FatherRefNode
+            };
+        },
+
+
 
         getTreeNodesAndEdges: function (focusTask, maxLevel = 5) {
 
@@ -279,11 +292,8 @@ const useNodesLogic = () => {
             };
 
 
-            // set viwe port into the center
-            reactFlow.setCenter(0, 0, { duration: 0, zoom: 1 });
-
             const verticalPadding = 20;
-            const horizontalPadding = 10;
+            const horizontalPadding = 15;
             // measure Main Node size
             const focusNodeSize = mesureMainNode();
 
@@ -291,38 +301,40 @@ const useNodesLogic = () => {
 
             const focusNode = this.createNodeByTask(focusTask, 'mainNode', focusPosition);
 
-            const childsSelection = getChildsSelection(focusTask);
-            const childTasks = orderTasksByDate(childsSelection.tasks);
+            const childsTasks = getChildsFromTask(focusTask);
+            const orderChildTasks = orderTasksByStartDate(childsTasks);
 
 
             const childNodes = [];
 
-            const nodesMeasures = childTasks.map((task) => mesureChildNode(task.name));
+            const nodesMeasures = orderChildTasks.map((task) => mesureChildNode(task.name));
 
             // load the width of the childs to calculate the x position of each one
-            const widthSum = []
+            let prevWidthTotal = 0
+            let childsPositions = []
+
             for (let i = 0; i < nodesMeasures.length; i++) {
                 // the prev sum of wwidths of the last child
-                let prev = 0;
-                if (i != 0) { prev = widthSum[i - 1] }
+                let nodeTotalWith = nodesMeasures[i].width + horizontalPadding * 2
+                childsPositions.push(prevWidthTotal + (nodeTotalWith / 2))
 
-                widthSum.push(nodesMeasures[i].width + prev + horizontalPadding);
+                //widthSum.push(nodesMeasures[i].width + prevWidthSum + horizontalPadding);
+                prevWidthTotal = prevWidthTotal + nodeTotalWith;
             };
 
-            const totalChildsLenght = widthSum[nodesMeasures.length - 1];
+            const totalChildsLenght = prevWidthTotal;
+            const childsLineHeight = (focusNodeSize.height / 2) + verticalPadding;
 
-            childTasks.forEach((task, index) => {
+            orderChildTasks.forEach((task, index) => {
 
-                const widthLenght = widthSum[index];
-                const x = -(widthLenght - (totalChildsLenght / 2));
-                const y = (focusNodeSize.height / 2) + verticalPadding;
-                const position = { x, y };
+                const widthPosition = childsPositions[index];
+                const x = widthPosition - (totalChildsLenght / 2);
 
-                childNodes.push(this.createChildNode(task, position));
+                childNodes.push(this.createChildNode(task, { x, childsLineHeight }));
             });
 
             const edges = [];
-            childTasks.forEach((task) => {
+            orderChildTasks.forEach((task) => {
                 edges.push(this.creteEdges(focusTask, task));
             });
 
@@ -347,8 +359,8 @@ const useNodesLogic = () => {
             };
 
             return {
-                initialNodes: [focusNode, ...childNodes],
-                initialEdges: edges,
+                nodes: [focusNode, ...childNodes],
+                edges: [...edges],
                 nodeTypes,
             }
         },

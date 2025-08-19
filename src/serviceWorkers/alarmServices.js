@@ -7,7 +7,7 @@ const alarmServices = {
         await chrome.alarms.create(dataKeyWords.MAIN_ALARM_KEY, {
             // each 12 houres
             periodInMinutes: 60 * 6,
-            delayInMinutes: 1/60 // test
+            delayInMinutes: 1 / 60 // test
         });
     },
 
@@ -35,8 +35,8 @@ const alarmServices = {
     },
 
     checkCompleteAlarm: async function () {
-        let tasks = await TaskService.getAllTasks();
-        let refObject = {[dataKeyWords.ALARM_DATA_KEY] : await this.fetchAlarmData()};
+        let tasks = await TaskService.retrieveAllTasksData();
+        let refObject = { [dataKeyWords.ALARM_DATA_KEY]: await this.fetchAlarmData() };
 
         this.checkAlarm(refObject, tasks);
     },

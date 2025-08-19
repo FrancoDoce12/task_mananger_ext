@@ -4,7 +4,7 @@ import { useContext, useMemo } from "react";
 import { useTasks } from "../../hooks/useTasks";
 
 
-const SideBar = ({ state }) => {
+const SideBar = ({ isNewTaskButton }) => {
 
     const { getMainTasks, tasks } = useTasks();
 
@@ -31,7 +31,7 @@ const SideBar = ({ state }) => {
             key={"create-new-task-button"} id={"create-new-task-button"}>
         </CreateNewTaskTab>)
 
-    if (state == "new task") {
+    if (isNewTaskButton) {
         tasksComponents.push(NewTaskButton)
     }
 

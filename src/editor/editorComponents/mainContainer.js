@@ -5,14 +5,14 @@ import { useMainContainerLogic } from "../../hooks/useMainContainerLogic";
 
 const MainContainer = () => {
     // main container
-    const { sideBarState, taskViewerState, taskToShow } = useMainContainerLogic();
+    const { isSideBarNewTaskButton, taskViewerState, screenTask } = useMainContainerLogic();
 
     return (
         <div className="flex flex-row w-full h-screen">
-            <SideBar state={sideBarState}></SideBar>
+            <SideBar isSideBarNewTaskButton={isSideBarNewTaskButton} ></SideBar>
             <TaskViewer
                 state={taskViewerState}
-                task={taskToShow}>
+                screenTask={screenTask}>
             </TaskViewer>
         </div>
     );

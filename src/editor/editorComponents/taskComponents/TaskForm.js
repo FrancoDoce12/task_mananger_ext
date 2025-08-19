@@ -2,24 +2,16 @@ import { useState, useContext } from 'react';
 import { FunctionalityContext } from '../sharedComponents';
 import { useTasks } from '../../../hooks/useTasks';
 import BaseInput from '../baseInput';
-
-const formStatesKeys = {
-    INITIAL_STATE: 'in progress',
-    LOADING_STATE: 'loading',
-    ACTION_COMPLETED_STATE: 'completed'
-};
+import { viewerStates, formStateKeys } from '../../../constants/enums';
 
 
-/**
- * Form component for creating or editing a task.
- */
 const TaskForm = ({ fatherId = null }) => {
     // fatherId for the task what will be upladed,
     // if there is a father id that means that this task
     // will be a child of the father id
     const [taskData, setTaskData] = useState({});
-    const [formState, setFormState] = useState(formStatesKeys.INITIAL_STATE);
-    const { setViewerState, setSideBarState } = useContext(FunctionalityContext);
+    const [formState, setFormState] = useState(formStateKeys.INITIAL_STATE);
+    const { setViewerState } = useContext(FunctionalityContext);
 
     const tasksHooks = useTasks();
 
@@ -29,14 +21,13 @@ const TaskForm = ({ fatherId = null }) => {
         const saveNewTaksData = async () => {
             await tasksHooks.addTask({ ...taskData, fatherId });
 
-            setFormState(formStatesKeys.ACTION_COMPLETED_STATE);
+            setFormState(formStateKeys.ACTION_COMPLETED_STATE);
             //update the father
-            setViewerState("show current active task");
-            setSideBarState("new task");
+            setViewerState(viewerStates.SCREEN_TASK);
         }
         saveNewTaksData();
 
-        setFormState(formStatesKeys.LOADING_STATE);
+        setFormState(formStateKeys.LOADING_STATE);
     };
 
     const handleChange = ({ target: { name, value } }) => {

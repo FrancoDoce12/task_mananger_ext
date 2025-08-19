@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useTasks } from "../../../hooks/useTasks";
 import InputDetail from "../inputDetails";
+import { REF_OBJECT_KEYS, viewerStates } from "../../../constants/enums";
+const { SET_VIEWER_STATE } = REF_OBJECT_KEYS
 
 
 const TaskDetail = ({ task }) => {
@@ -13,7 +15,7 @@ const TaskDetail = ({ task }) => {
         setTaskChanged(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleCheckBoxChange = ({ target: {name, checked} }) => {
+    const handleCheckBoxChange = ({ target: { name, checked } }) => {
         setTaskChanged(prev => ({ ...prev, [name]: checked }));
     };
 
@@ -93,7 +95,7 @@ const TaskDetail = ({ task }) => {
 
             <div className="form-options-container">
                 <button className="form-submit-button" type="submit">Save Changes</button>
-                <button className="form-submit-button" type="button" onClick={refObject.setChildForm} >Create Child Task</button>
+                <button className="form-submit-button" type="button" onClick={() => { refObject[SET_VIEWER_STATE](viewerStates.NEW_CHILD_FORM) }} >Create Child Task</button>
                 <button className="form-submit-button" type="button" onClick={() => { deleteTask(task) }} >Delete Task</button>
             </div>
         </form>

@@ -5,14 +5,14 @@ const notyServices = {
 
     pushMainNotification: async function () {
         let imgUrl = chrome.runtime.getURL("logo_app.png");
-        let tasks = await TaskService.getAllTasks();
+        let tasks = await TaskService.retrieveAllTasksData();
         let activeTasks = TaskService.selectActiveMainTasks(tasks).tasks;
 
         await this.pushNotyfications(activeTasks, imgUrl, tasks, {});
     },
 
     pushNotyfications: async function (activeTasks, imgUrl, tasks, settings) {
-    
+
         let items = activeTasks.map((task) => {
             let taskMassage = TaskService.getTaskMassage(task, tasks);
             return { title: task.name, message: taskMassage };

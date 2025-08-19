@@ -2,6 +2,9 @@ import { useContext } from 'react';
 import { TaskContext, FunctionalityContext } from '../editor/editorComponents/sharedComponents.js';
 import { TaskService } from '../serviceWorkers/taskServices';
 import alarmServices from '../serviceWorkers/alarmServices.js';
+import { REF_OBJECT_KEYS } from '../constants/enums.js';
+const { SET_SELECTED_TASK, SET_VIEWER_STATE } = REF_OBJECT_KEYS;
+
 
 // task schema 
 /**
@@ -23,8 +26,16 @@ export const useTasks = () => {
 
     return {
         tasks,
-
+        setTasks,
         refObject,
+
+        retrieveTasksData: async () => {
+            return await TaskService.retrieveAllTasksData();
+        },
+
+        retrieveIdCounter: async () => {
+            return await TaskService.retrieveIdCounter();
+        },
 
         addTask: async (newTask) => {
             const updatedTasks = await TaskService.addTask(newTask, tasks, refObject);
@@ -35,12 +46,19 @@ export const useTasks = () => {
             return TaskService.selectMainTasks(tasks);
         },
 
-        getChildsTasks: (fatherTask) => {
-            return TaskService.selectTasksByIds(fatherTask.childsIds, tasks);
+        getChildsFromTask: (fatherTask) => {
+            return TaskService.selectChildsFromTasks(fatherTask, tasks).tasks;
         },
 
         setSelectedTask: (task) => {
-            return refObject.setSelectedTask(task);
+            return refObject[SET_SELECTED_TASK]((prev) => {
+                if (prev?.id === task.id) { return prev; };
+                return task;
+            });
+        },
+
+        setViewerState: (state) => {
+            return refObject[SET_VIEWER_STATE](state);
         },
 
         /**
@@ -62,6 +80,14 @@ export const useTasks = () => {
                 return tasks[0];
             };
             return activeTask;
+        },
+
+        getActiveMainTask: () => {
+            return TaskService.getActiveMainTask(tasks);
+        },
+
+        isValidAndLoadedTask: (task) => {
+            return TaskService.isValidAndLoadedTask(task, tasks);
         },
 
         getChildsSelection: (fatherTask) => {
