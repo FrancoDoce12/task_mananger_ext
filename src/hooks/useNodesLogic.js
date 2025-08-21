@@ -279,18 +279,103 @@ const useNodesLogic = () => {
             };
         },
 
+        getTreeEdges: function (focusTask, childTasks, fatherTask = false, deepLevel = 5) {
+            const edges = [];
 
+            childTasks.forEach((task) => {
+                edges.push(this.creteEdges(focusTask, task));
+            });
 
-        getTreeNodesAndEdges: function (focusTask, maxLevel = 5) {
-
-
-            const nodeTypes = {
-                mainNode: MainNode,
-                description: DescriptionNode,
-                childNode: ChildNode,
-                fatherRefNode: FatherRefNode
+            if (fatherTask) {
+                edges.push(this.createRefNodeEdge(focusTask, fatherTask));
             };
 
+            return edges;
+        },
+
+        getTreeFocusNode: function (focusTask, focusNodeSize) {
+            const focusPosition = { x: -(focusNodeSize.width / 2), y: -(focusNodeSize.height / 2) };
+            return this.createNodeByTask(focusTask, 'mainNode', focusPosition);
+        },
+
+        getTreeChildsNodes: function (childsTasks, focusNodeSize, verticalPadding = 20, horizontalPadding = 15) {
+            const orderChildTasks = orderTasksByStartDate(childsTasks);
+
+            const childNodes = [];
+            const nodesMeasures = orderChildTasks.map((task) => mesureChildNode(task.name));
+
+            // load the width of the childs to calculate the x position of each one
+            let prevWidthTotal = 0
+            let childsPositions = []
+
+            for (let i = 0; i < nodesMeasures.length; i++) {
+                // the prev sum of wwidths of the last child
+                let nodeTotalWith = nodesMeasures[i].width + horizontalPadding * 2
+                childsPositions.push(prevWidthTotal + (nodeTotalWith / 2))
+
+                prevWidthTotal = prevWidthTotal + nodeTotalWith;
+            };
+
+            const totalChildsLenght = prevWidthTotal;
+            const childsLineHeight = (focusNodeSize.height / 2) + verticalPadding;
+
+            orderChildTasks.forEach((task, index) => {
+
+                const widthPosition = childsPositions[index];
+                const x = widthPosition - (totalChildsLenght / 2);
+
+                childNodes.push(this.createChildNode(task, { x, y: childsLineHeight }));
+            });
+
+            return childNodes;
+
+        },
+
+        getTreeRefNode: function (fatherTask, focusNodeSize, fatherNodePadding = 30) {
+
+            const fatherRefNodeSize = mesureFatherRefNode(fatherTask);
+
+            const y = -((focusNodeSize.height / 2) + fatherNodePadding + (fatherRefNodeSize.height / 2));
+            const x = -(fatherRefNodeSize.width / 2);
+
+            return this.createFatherRefNode(fatherTask, { x, y });
+        },
+
+        getTreeNodes: function (focusTask, childTasks, isFatherTask) {
+
+            var nodes = []
+
+            const focusNodeSize = mesureMainNode();
+
+            const focusNode = this.getTreeFocusNode(focusTask, focusNodeSize);
+            const childNodes = this.getTreeChildsNodes(childTasks, focusNodeSize);
+
+            nodes = [focusNode, ...childNodes];
+
+            if (isFatherTask) {
+                const refNode = this.getTreeRefNode(getFatherTask(focusTask), focusNodeSize);
+                nodes = [refNode, ...nodes];
+            };
+
+            return nodes;
+
+        },
+
+        getView: function (focusTask) {
+            var isFatherTask = !(focusTask.fatherId === null);
+            var childTasks = getChildsFromTask(focusTask);
+
+            var nodes = this.getTreeNodes(focusTask, childTasks, isFatherTask);
+
+            var edges = this.getTreeEdges(focusTask, childTasks, isFatherTask);
+
+            return {
+                nodes, edges
+            };
+
+        },
+
+        getTreeNodesAndEdges: function (focusTask, maxLevel = 5) {
 
             const verticalPadding = 20;
             const horizontalPadding = 15;
@@ -330,7 +415,7 @@ const useNodesLogic = () => {
                 const widthPosition = childsPositions[index];
                 const x = widthPosition - (totalChildsLenght / 2);
 
-                childNodes.push(this.createChildNode(task, { x, childsLineHeight }));
+                childNodes.push(this.createChildNode(task, { x, y: childsLineHeight }));
             });
 
             const edges = [];
@@ -361,7 +446,7 @@ const useNodesLogic = () => {
             return {
                 nodes: [focusNode, ...childNodes],
                 edges: [...edges],
-                nodeTypes,
+
             }
         },
     }

@@ -3,22 +3,30 @@ import '../../../tailwind.css'
 import { ReactFlow, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
 import { useCallback, useContext, useEffect, useMemo } from 'react';
 import useNodesLogic from '../../../hooks/useNodesLogic';
+import { useTasks } from '../../../hooks/useTasks';
 import { FunctionalityContext } from '../sharedComponents';
 
 
 const ShowTaskTreeView = ({ task }) => {
 
     const nodesHook = useNodesLogic();
+    const tasksHook = useTasks();
     const refObject = useContext(FunctionalityContext);
 
     const nodeTypes = nodesHook.getNodesTypes();
 
     const [nodes, setNodes, onNodesChange] = useNodesState((() => {
-        return nodesHook.getTreeNodesAndEdges(task).nodes;
+        var childTasks = tasksHook.getChildsFromTask(task);
+        var isFatherValid = tasksHook.isValidTaskId(task.fatherId);
+
+        return nodesHook.getTreeNodes(task, childTasks, isFatherValid);
     }));
 
     const [edges, setEdges, onEdgesChange] = useEdgesState((() => {
-        return nodesHook.getTreeNodesAndEdges(task).edges;
+        var childTasks = tasksHook.getChildsFromTask(task);
+        var isFatherValid = tasksHook.isValidTaskId(task.fatherId);
+
+        return nodesHook.getTreeEdges(task, childTasks, isFatherValid);
     }));
 
     useEffect(() => {

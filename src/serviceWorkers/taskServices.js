@@ -308,6 +308,14 @@ export const TaskService = {
         return (task?.name && (Number.isFinite(task.id)));
     },
 
+    isValidTaskId: function (taskId, currentTasks) {
+        if (!(taskId === null || taskId === undefined)) {
+            var selection = this.selectTasksByIds([taskId], currentTasks);
+            return (!selection.err);
+        }
+        return false;
+    },
+
     taskExistsInContextTasks: function (task, currentTasks) {
         return (!Boolean(this.selectTasksByIds([task.id], currentTasks).err));
     },

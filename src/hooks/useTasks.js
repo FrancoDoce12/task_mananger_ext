@@ -86,6 +86,10 @@ export const useTasks = () => {
             return TaskService.getActiveMainTask(tasks);
         },
 
+        isValidTaskId: (taskId) => {
+            return TaskService.isValidTaskId(taskId, tasks);
+        },
+
         isValidAndLoadedTask: (task) => {
             return TaskService.isValidAndLoadedTask(task, tasks);
         },
