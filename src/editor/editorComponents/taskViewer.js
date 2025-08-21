@@ -33,7 +33,7 @@ const TaskViewer = ({ state, screenTask }) => {
             );
         case viewerStates.SCREEN_TASK:
             return (
-                <div style={{ with: "100%", height: "100%" }} className="view-container">
+                <div style={{ width: "100%", height: "100%" }} className="view-container">
                     <ReactFlowProvider>
                         <ShowTaskTreeView
                             task={screenTask}>
