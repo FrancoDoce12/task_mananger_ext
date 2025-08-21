@@ -44,4 +44,4 @@ const formStateKeys = {
     ACTION_COMPLETED_STATE: 'completed'
 }
 
-export { dataKeyWords, viewerStates, sideBarStates, formStateKeys, NOTIFICATION_ID, REF_OBJECT_KEYS };
+export { dataKeyWords, viewerStates, formStateKeys, NOTIFICATION_ID, REF_OBJECT_KEYS };
