@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTasks } from "../../../hooks/useTasks";
 import InputDetail from "../inputDetails";
 import { REF_OBJECT_KEYS, viewerStates } from "../../../constants/enums";
@@ -10,6 +10,10 @@ const TaskDetail = ({ task }) => {
     const { updateTask, refObject, deleteTask } = useTasks();
 
     const [taskChanged, setTaskChanged] = useState({});
+
+    useEffect(() => {
+        setTaskChanged({});
+    }, [task]);
 
     const handleChange = ({ target: { name, value } }) => {
         setTaskChanged(prev => ({ ...prev, [name]: value }));

@@ -41,6 +41,11 @@ const formStateKeys = {
     ACTION_COMPLETED_STATE: 'completed'
 }
 
+const nodesTypes = {
+    MAIN_NODE_TYPE_KEY: "mainNode",
+    CHILD_NODE_TYPE_KEY: "childNode",
+    REF_NODE_TYPE_KEY :"fatherRefNode",
+    DESCRIPTION_NODE_TYPE_KEY: "description",
+}
 
-
-export { dataKeyWords, viewerStates, formStateKeys, NOTIFICATION_ID, defaultColor, REF_OBJECT_KEYS };
+export { dataKeyWords, viewerStates, formStateKeys, nodesTypes, NOTIFICATION_ID, defaultColor, REF_OBJECT_KEYS };

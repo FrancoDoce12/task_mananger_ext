@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTasks } from "./useTasks";
 import { Handle, Position, useEdgesState, useNodesState, useReactFlow } from "@xyflow/react";
+import { nodesTypes, defaultColor } from "../constants/enums";
+const { CHILD_NODE_TYPE_KEY, DESCRIPTION_NODE_TYPE_KEY, MAIN_NODE_TYPE_KEY, REF_NODE_TYPE_KEY } = nodesTypes
 
 
 const baseAnimationC = "transition-all duration-300 ease-in-out";
+
+
+// --------------------- Measure sizes functions ---------------------
 
 const mesureChildNode = (name) => {
 
@@ -74,6 +79,8 @@ const measureTextWidth = (text, fontFace = "600 15px sans_custom") => {
 
 };
 
+// --------------------- Nodes Definitions ---------------------
+
 const DescriptionNode = ({ data: { task, bounds }, }) => {
 
     const [anState, setAnState] = useState("spawn");
@@ -113,7 +120,8 @@ const DescriptionNode = ({ data: { task, bounds }, }) => {
 
     return (
         <>
-            <div className={`${sizeClases} node-base transition-all duration-300 ease-in-out text-pretty overflow-hidden text-ellipsis ${animClases}`}>
+            <div style={{ "borderColor": `${task.color || defaultColor}` }}
+                className={`${sizeClases} node-base transition-all duration-300 ease-in-out text-pretty overflow-hidden text-ellipsis ${animClases}`}>
                 {task?.description && task.description}
             </div>
             <button onClick={handleDeletion}>
@@ -130,7 +138,9 @@ const FatherRefNode = ({ data }) => {
     const task = data.task;
 
     return (
-        <div onClick={() => setSelectedTask(task)} className="flex flex-row node-base secundary-node">
+        <div onClick={() => setSelectedTask(task)}
+            className="flex flex-row node-base secundary-node"
+            style={{ "borderColor": `${task.color || defaultColor}` }}>
             <h2 className="ref-text" >{task.name}</h2>
             <p className="ref-text suspensive-dots">...</p>
             <Handle type="target" position={Position.Bottom}></Handle>
@@ -144,8 +154,12 @@ const ChildNode = ({ data }) => {
 
     const task = data.task;
 
+    task.color = task?.color ? task.color : "#62748e"; // slate-500 color as default
+
     return (
-        <div onClick={() => setSelectedTask(task)} className="flex flex-row node-base">
+        <div onClick={() => setSelectedTask(task)}
+            className="flex flex-row node-base"
+            style={{ "borderColor": `${task.color || defaultColor}` }}>
             <Handle type="target" id={`${task.id}-target`} position={Position.Top}></Handle>
             <h2>{task.name}</h2>
             <Handle type="source" position={Position.Bottom}></Handle>
@@ -172,11 +186,12 @@ const MainNode = ({ data }) => {
         }]);
     };
 
+    task.color = task?.color ? task.color : "#62748e"; // slate-500 color as default
 
     return (
         <div
             className={`flex flex-row node-base`}
-        >
+            style={{ "borderColor": `${task.color || defaultColor}` }}>
             <div className="flex flex-col items-center w-fit">
                 <p>Main Task</p>
                 <h3>
@@ -213,20 +228,24 @@ const MainNode = ({ data }) => {
 }
 
 
+// --------------------- Nodes hook definition ---------------------
+
+
 const useNodesLogic = () => {
 
-    const { getChildsFromTask, orderTasksByStartDate, getFatherTask } = useTasks();
+    const { getChildsFromTask, orderTasksByStartDate, getFatherTask, isValidTaskId } = useTasks();
 
     const reactFlow = useReactFlow();
 
     return {
-        createNodeByTask: function (task, type, position = { x: 0, y: 0 }) {
+        createNodeByTask: function (task, type, position = null) {
+            if (position === null) { position = { x: 0, y: 0 }; };
             return {
                 id: `${task.id}`,
                 position,
                 data: { task },
                 type: type
-            }
+            };
         },
 
         createChildNode: function (task, position = { x: 0, y: 0 }) {
@@ -272,10 +291,10 @@ const useNodesLogic = () => {
 
         getNodesTypes: function () {
             return {
-                mainNode: MainNode,
-                description: DescriptionNode,
-                childNode: ChildNode,
-                fatherRefNode: FatherRefNode
+                [MAIN_NODE_TYPE_KEY]: MainNode,
+                [DESCRIPTION_NODE_TYPE_KEY]: DescriptionNode,
+                [CHILD_NODE_TYPE_KEY]: ChildNode,
+                [REF_NODE_TYPE_KEY]: FatherRefNode
             };
         },
 
@@ -293,12 +312,21 @@ const useNodesLogic = () => {
             return edges;
         },
 
-        getTreeFocusNode: function (focusTask, focusNodeSize) {
-            const focusPosition = { x: -(focusNodeSize.width / 2), y: -(focusNodeSize.height / 2) };
-            return this.createNodeByTask(focusTask, 'mainNode', focusPosition);
+        getTreeEdgesByTask: function (focusTask) {
+            var childTasks = getChildsFromTask(focusTask);
+            var isFatherValid = isValidTaskId(focusTask.fatherId);
+            return this.getTreeEdges(focusTask, childTasks, isFatherValid);
         },
 
-        getTreeChildsNodes: function (childsTasks, focusNodeSize, verticalPadding = 20, horizontalPadding = 15) {
+        getTreeFocusNode: function (focusTask, focusNodeSize, position = null) {
+            if (position === null) {
+                position = { x: -(focusNodeSize.width / 2), y: -(focusNodeSize.height / 2) };
+            };
+            return this.createNodeByTask(focusTask, 'mainNode', position);
+        },
+
+        getTreeChildsNodes: function (childsTasks, focusNodeSize, prevPositions = [], verticalPadding = 20, horizontalPadding = 15) {
+            // prevPosition should be order by start date alredy
             const orderChildTasks = orderTasksByStartDate(childsTasks);
 
             const childNodes = [];
@@ -306,12 +334,12 @@ const useNodesLogic = () => {
 
             // load the width of the childs to calculate the x position of each one
             let prevWidthTotal = 0
-            let childsPositions = []
+            let positionWidths = []
 
             for (let i = 0; i < nodesMeasures.length; i++) {
                 // the prev sum of wwidths of the last child
-                let nodeTotalWith = nodesMeasures[i].width + horizontalPadding * 2
-                childsPositions.push(prevWidthTotal + (nodeTotalWith / 2))
+                let nodeTotalWith = nodesMeasures[i].width + horizontalPadding * 2;
+                positionWidths.push(prevWidthTotal + (nodeTotalWith / 2));
 
                 prevWidthTotal = prevWidthTotal + nodeTotalWith;
             };
@@ -319,46 +347,96 @@ const useNodesLogic = () => {
             const totalChildsLenght = prevWidthTotal;
             const childsLineHeight = (focusNodeSize.height / 2) + verticalPadding;
 
+            prevPositions.length = orderChildTasks.length;
+
             orderChildTasks.forEach((task, index) => {
+                let finalPosition = {};
 
-                const widthPosition = childsPositions[index];
-                const x = widthPosition - (totalChildsLenght / 2);
+                if (prevPositions[index]) {
+                    finalPosition = prevPositions[index];
+                } else {
+                    finalPosition = {
+                        x: positionWidths[index] - (totalChildsLenght / 2),
+                        y: childsLineHeight
+                    };
+                };
 
-                childNodes.push(this.createChildNode(task, { x, y: childsLineHeight }));
+                childNodes.push(this.createChildNode(task, finalPosition));
             });
 
             return childNodes;
 
         },
 
-        getTreeRefNode: function (fatherTask, focusNodeSize, fatherNodePadding = 30) {
+        getTreeRefNode: function (fatherTask, focusNodeSize, position = null, fatherNodePadding = 30) {
 
-            const fatherRefNodeSize = mesureFatherRefNode(fatherTask);
+            if (position === null) {
+                const fatherRefNodeSize = mesureFatherRefNode(fatherTask);
 
-            const y = -((focusNodeSize.height / 2) + fatherNodePadding + (fatherRefNodeSize.height / 2));
-            const x = -(fatherRefNodeSize.width / 2);
+                const y = -((focusNodeSize.height / 2) + fatherNodePadding + (fatherRefNodeSize.height / 2));
+                const x = -(fatherRefNodeSize.width / 2);
+                position = { x, y };
+            }
 
-            return this.createFatherRefNode(fatherTask, { x, y });
+            return this.createFatherRefNode(fatherTask, position);
         },
 
-        getTreeNodes: function (focusTask, childTasks, isFatherTask) {
+        getTreeNodes: function (focusTask, childTasks, isFatherTask, focusPos = null, childsPos = [], refPos = null) {
 
             var nodes = []
 
             const focusNodeSize = mesureMainNode();
 
-            const focusNode = this.getTreeFocusNode(focusTask, focusNodeSize);
-            const childNodes = this.getTreeChildsNodes(childTasks, focusNodeSize);
+            const focusNode = this.getTreeFocusNode(focusTask, focusNodeSize, focusPos);
+            const childNodes = this.getTreeChildsNodes(childTasks, focusNodeSize, childsPos);
 
             nodes = [focusNode, ...childNodes];
 
             if (isFatherTask) {
-                const refNode = this.getTreeRefNode(getFatherTask(focusTask), focusNodeSize);
+                const refNode = this.getTreeRefNode(getFatherTask(focusTask), focusNodeSize, refPos);
                 nodes = [refNode, ...nodes];
             };
 
             return nodes;
 
+        },
+
+        getTreeNodesByTask: function (focusTask, focusPos = null, childsPos = [], refPos = null) {
+            var childTasks = getChildsFromTask(focusTask);
+            var isFatherValid = isValidTaskId(focusTask.fatherId);
+
+            return this.getTreeNodes(focusTask, childTasks, isFatherValid, focusPos, childsPos, refPos);
+        },
+
+        updateTreeNodes: function (task) {
+
+            let nodes = reactFlow.getNodes();
+
+            console.log(nodes);
+
+            let positions = {
+                [CHILD_NODE_TYPE_KEY]: []
+            };
+            let childs = []
+            nodes.forEach((node) => {
+                if (positions[node.type] === CHILD_NODE_TYPE_KEY) {
+                    childs.push({ ...node.data.task, position: node.position })
+                } else {
+                    positions[node.type] = node.position
+                };
+            })
+
+            childs = orderTasksByStartDate(childs);
+            positions[CHILD_NODE_TYPE_KEY] = childs.map((child) => {
+                return child.position;
+            })
+
+            return this.getTreeNodesByTask(
+                task,
+                positions[MAIN_NODE_TYPE_KEY],
+                positions[CHILD_NODE_TYPE_KEY],
+                positions[REF_NODE_TYPE_KEY]
+            );
         },
 
         getView: function (focusTask) {

@@ -1,58 +1,44 @@
 import '@xyflow/react/dist/style.css';
 import '../../../tailwind.css'
 import { ReactFlow, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
-import { useCallback, useContext, useEffect, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useNodesLogic from '../../../hooks/useNodesLogic';
 import { useTasks } from '../../../hooks/useTasks';
-import { FunctionalityContext } from '../sharedComponents';
 
 
 const ShowTaskTreeView = ({ task }) => {
 
     const nodesHook = useNodesLogic();
-    const tasksHook = useTasks();
-    const refObject = useContext(FunctionalityContext);
-
     const nodeTypes = nodesHook.getNodesTypes();
 
-    const [nodes, setNodes, onNodesChange] = useNodesState((() => {
-        var childTasks = tasksHook.getChildsFromTask(task);
-        var isFatherValid = tasksHook.isValidTaskId(task.fatherId);
+    // keeps track of prevous task id, to control render logic more efficiently (avoid re renders)
+    const [prevTaskId, setPrevTaskId] = useState(null);
 
-        return nodesHook.getTreeNodes(task, childTasks, isFatherValid);
+    // default values
+    
+    const [nodes, setNodes, onNodesChange] = useNodesState((() => {
+        return nodesHook.getTreeNodesByTask(task);
     }));
 
     const [edges, setEdges, onEdgesChange] = useEdgesState((() => {
-        var childTasks = tasksHook.getChildsFromTask(task);
-        var isFatherValid = tasksHook.isValidTaskId(task.fatherId);
-
-        return nodesHook.getTreeEdges(task, childTasks, isFatherValid);
+        return nodesHook.getTreeEdgesByTask(task);
     }));
 
+
     useEffect(() => {
-        const { edges, nodes } = nodesHook.getTreeNodesAndEdges(task);
-        setEdges(edges);
-        setNodes(nodes);
 
-        nodesHook.centerCamera();
+        if (!(task.id === prevTaskId)) {
+            const { edges, nodes } = nodesHook.getTreeNodesAndEdges(task);
+            setEdges(edges);
+            setNodes(nodes);
+            nodesHook.centerCamera();
+            setPrevTaskId(task.id);
+            return;
+        };
+
+        setNodes(nodesHook.updateTreeNodes(task));
+
     }, [task])
-
-    // if the task changes, get new task tree
-    // useEffect(() => {
-    //     const { newEdges, newNodes } = nodesHook.getTreeNodesAndEdges(task);
-    //     setNodes(newNodes);
-    //     setEdges(newEdges);
-    // }, [task]);
-
-    // function changeTask(task) {
-    //     const { initialEdges, initialNodes, nodeTypes } = nodesHook.getTreeNodesAndEdges(task);
-    //     setNodes(initialNodes);
-    //     setEdges(initialEdges);
-    // };
-
-    //useEffect((() => { refObject.changeTreeViewTask = changeTask }), [nodes, edges]);
-
-    //useEffect((() => { refObject.showTaskTreeViewInitialaized = true; }), []);
 
     const onConnect = useCallback(
         (params) => setEdges((eds) => addEdge(params, eds)),
