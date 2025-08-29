@@ -93,3 +93,7 @@
 .side-bar {
     @apply w-2/12 text-center shadow-lg
 }
+
+.side-bar-task-header {
+    @apply leading-none rounded-full hover:outline hover:outline-[0.1rem] hover:outline-slate-400
+}
