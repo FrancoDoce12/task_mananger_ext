@@ -12,12 +12,12 @@ const  handleClick = async (e) => {
     });
 }
 
-const Button = () => {
+const ActionButton = () => {
 
     return (
         <button onClick={handleClick} >
-            Open Editor
+            Open Task Manager Editor
         </button>)
 }
 
-export default Button
+export default ActionButton;
