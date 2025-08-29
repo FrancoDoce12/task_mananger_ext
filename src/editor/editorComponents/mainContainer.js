@@ -9,7 +9,7 @@ const MainContainer = () => {
 
     return (
         <div className="flex flex-row w-full h-screen">
-            <SideBar isSideBarNewTaskButton={isSideBarNewTaskButton} ></SideBar>
+            <SideBar isNewTaskButton={isSideBarNewTaskButton} ></SideBar>
             <TaskViewer
                 state={taskViewerState}
                 screenTask={screenTask}>
