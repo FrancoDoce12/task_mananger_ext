@@ -4,12 +4,12 @@ import { viewerStates } from "../constants/enums";
 import { TaskService } from "../serviceWorkers/taskServices";
 import alarmServices from "../serviceWorkers/alarmServices";
 import { REF_OBJECT_KEYS } from "../constants/enums";
-const { SET_TASKS_DATA, ID_COUNTER, SET_SELECTED_TASK, SET_VIEWER_STATE, ALARM_DATA_KEY } = REF_OBJECT_KEYS;
+const { ID_COUNTER, SET_SELECTED_TASK, SET_VIEWER_STATE, ALARM_DATA_KEY } = REF_OBJECT_KEYS;
 
 export const useMainContainerLogic = () => {
 
     const { tasks, refObject, retrieveTasksData, retrieveIdCounter,
-        isValidAndLoadedTask, getActiveMainTask
+        isValidAndLoadedTask, getActiveMainTask, saveAllTasks, getTask,
     } = useTasks();
 
     // ----------- fetchExtencionData -----------
@@ -22,7 +22,7 @@ export const useMainContainerLogic = () => {
             refObject[ID_COUNTER] = await retrieveIdCounter();
             refObject[ALARM_DATA_KEY] = await alarmServices.fetchAlarmData();
 
-            refObject[SET_TASKS_DATA](tasksData);
+            saveAllTasks(tasksData);
         }
         fetchExtencionData();
     }, []);
@@ -47,7 +47,9 @@ export const useMainContainerLogic = () => {
 
     let screenTask = useMemo(() => {
         if (isValidAndLoadedTask(selectedTask, tasks)) {
-            return selectedTask;
+            // return from loaded task to catch posibles task changes
+            // from the task detail form
+            return getTask(selectedTask.id);
         } else {
             return getActiveMainTask(tasks);
         };

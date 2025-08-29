@@ -3,7 +3,7 @@ import { TaskContext, FunctionalityContext } from '../editor/editorComponents/sh
 import { TaskService } from '../serviceWorkers/taskServices';
 import alarmServices from '../serviceWorkers/alarmServices.js';
 import { REF_OBJECT_KEYS } from '../constants/enums.js';
-const { SET_SELECTED_TASK, SET_VIEWER_STATE } = REF_OBJECT_KEYS;
+const { SET_SELECTED_TASK, SET_VIEWER_STATE, SET_TASKS_DATA } = REF_OBJECT_KEYS;
 
 
 // task schema 
@@ -27,8 +27,12 @@ export const useTasks = () => {
 
     return {
         tasks,
-        setTasks,
+        //setTasks,
         refObject,
+
+        getTask: (taskId) => {
+            return TaskService.getTaskById(taskId, tasks);
+        },
 
         retrieveTasksData: async () => {
             return await TaskService.retrieveAllTasksData();
@@ -40,7 +44,12 @@ export const useTasks = () => {
 
         addTask: async (newTask) => {
             const updatedTasks = await TaskService.addTask(newTask, tasks, refObject);
-            setTasks(updatedTasks);
+            refObject[SET_TASKS_DATA](updatedTasks);
+        },
+
+        saveAllTasks: async (newTasks) => {
+            await TaskService.saveAllTasks(newTasks);
+            refObject[SET_TASKS_DATA]([...newTasks]);
         },
 
         getMainTasks: () => {
@@ -110,19 +119,19 @@ export const useTasks = () => {
                 { isActive: !task.isActive },
                 tasks
             );
-            setTasks(updatedTasks);
+            refObject[SET_TASKS_DATA](updatedTasks);
             alarmServices.checkAlarm(refObject, updatedTasks);
         },
 
         updateTask: async (task, update) => {
             const updatedTasks = (await TaskService.updateTask(task.id, update, tasks));
-            setTasks(updatedTasks);
+            refObject[SET_TASKS_DATA]([...updatedTasks]);
         },
 
         deleteTask: async (task) => {
             const newTasks = await TaskService.deleteTasks([task.id], tasks);
             if (newTasks) {
-                setTasks(newTasks);
+                refObject[SET_TASKS_DATA](newTasks);
             }
             else { console.error(`Error Deleting Task:`, task); };
         },
