@@ -21,7 +21,7 @@
 
 
 .node-base {
-    @apply w-fit border border-[0.04rem] border-slate-500 rounded-[0.6rem] p-[0.5rem];
+    @apply w-fit border border-[0.06rem] border-slate-500 rounded-[0.6rem] p-[0.5rem] cursor-pointer;
 }
 
 .ref-node {}
@@ -88,4 +88,8 @@
 
 .view-container {
     @apply flex flex-row w-[100%] justify-center;
+}
+
+.side-bar {
+    @apply w-2/12 text-center shadow-lg
 }

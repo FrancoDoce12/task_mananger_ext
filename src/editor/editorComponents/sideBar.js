@@ -2,6 +2,9 @@ import SideBarTask from "./taskComponents/SideBarTask";
 import { FunctionalityContext } from "./sharedComponents";
 import { useContext, useMemo } from "react";
 import { useTasks } from "../../hooks/useTasks";
+import { viewerStates, REF_OBJECT_KEYS } from "../../constants/enums";
+const { SET_VIEWER_STATE } = REF_OBJECT_KEYS;
+
 
 
 const SideBar = ({ isNewTaskButton }) => {
@@ -37,7 +40,7 @@ const SideBar = ({ isNewTaskButton }) => {
 
 
     return (
-        <aside className="w-2/12 text-center shadow-lg bg-slate-100 ">
+        <aside className="side-bar">
             <h2 className="text-2xl p-3" >Tasks</h2>
             <nav className="text-lg list-none ">
                 {tasksComponents}
@@ -49,10 +52,10 @@ const SideBar = ({ isNewTaskButton }) => {
 
 const CreateNewTaskTab = ({ id }) => {
 
-    const { setViewerState } = useContext(FunctionalityContext)
+    const current = useContext(FunctionalityContext)
 
     const handleClick = () => {
-        setViewerState("task form")
+        current[SET_VIEWER_STATE](viewerStates.NEW_TASK_FORM);
     }
 
     return (
