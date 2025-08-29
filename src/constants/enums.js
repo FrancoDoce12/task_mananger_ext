@@ -26,10 +26,7 @@ const REF_OBJECT_KEYS = {
 
 const NOTIFICATION_ID = "noty";
 
-// const sideBarStates = {
-//     WITHOUT_NEW_TASK_BUTTON: "noNewTaskButton",
-//     WITH_NEW_TASK_BUTTON: "NewTaskButton"
-// };
+const defaultColor = "#62748e"; // (tailwind's slate-500)
 
 const viewerStates = {
     NEW_TASK_SCREEN: "newTaskScreen",
@@ -44,4 +41,6 @@ const formStateKeys = {
     ACTION_COMPLETED_STATE: 'completed'
 }
 
-export { dataKeyWords, viewerStates, formStateKeys, NOTIFICATION_ID, REF_OBJECT_KEYS };
+
+
+export { dataKeyWords, viewerStates, formStateKeys, NOTIFICATION_ID, defaultColor, REF_OBJECT_KEYS };

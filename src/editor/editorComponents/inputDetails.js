@@ -17,6 +17,7 @@ const InputDetail = (
 
     const saveButton = (
         <button
+            type="button"
             className="save-input-button"
             key={`${inputNameId}-save`}
             onClick={handleUpdate}

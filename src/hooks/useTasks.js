@@ -18,6 +18,7 @@ const { SET_SELECTED_TASK, SET_VIEWER_STATE } = REF_OBJECT_KEYS;
      * @property {Date} creationDate - The Date of the creation of the task (yyyy-mm-dd).
      * @property {Date} startDate - The Date when the task should start (yyyy-mm-dd).
      * @property {Date} endDate - The Date when the task should end or be finished (yyyy-mm-dd).
+     * @property {string} color - The Task’s representative color.
  */
 
 export const useTasks = () => {
@@ -148,6 +149,10 @@ export const useTasks = () => {
 
         orderTasksByStartDate: (tasks) => {
             return TaskService.orderTasksByStartDate(tasks);
+        },
+
+        getRandomColor: () => {
+            return TaskService.getRandomHexColor();
         },
 
     };

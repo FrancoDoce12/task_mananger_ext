@@ -71,6 +71,16 @@ const TaskDetail = ({ task }) => {
 
             <InputDetail
                 handleUpdate={handleUpdateField}
+                inputNameId="color"
+                inputType="color"
+                labelText="Task Color"
+                onChange={handleChange}
+                value={completeTask.color}
+            />
+
+
+            <InputDetail
+                handleUpdate={handleUpdateField}
                 inputNameId="startDate"
                 inputType="date"
                 labelText="Start Date"

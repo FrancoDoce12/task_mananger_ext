@@ -34,6 +34,12 @@ const BaseInput = ({
         labelClass = "input-check-label";
     };
 
+    if (inputType == "color") {
+        inputContainerClass = "input-container-row";
+        inputTagClass = "checkBox-input";
+        labelClass = "input-check-label";
+    };
+
     return (
         <div className={`base-input-container ${inputContainerClass}`}>
             <label className={labelClass} htmlFor={inputNameId}>{labelText}</label>

@@ -95,5 +95,5 @@
 }
 
 .side-bar-task-header {
-    @apply leading-none rounded-full hover:outline hover:outline-[0.1rem] hover:outline-slate-400
+    @apply leading-none rounded-full hover:outline hover:outline-[0.1rem] 
 }

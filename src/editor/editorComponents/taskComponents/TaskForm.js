@@ -9,11 +9,15 @@ const TaskForm = ({ fatherId = null }) => {
     // fatherId for the task what will be upladed,
     // if there is a father id that means that this task
     // will be a child of the father id
-    const [taskData, setTaskData] = useState({});
+    const tasksHooks = useTasks();
+
+    const [taskData, setTaskData] = useState({
+        color: tasksHooks.getRandomColor()
+    });
+
     const [formState, setFormState] = useState(formStateKeys.INITIAL_STATE);
     const { setViewerState } = useContext(FunctionalityContext);
 
-    const tasksHooks = useTasks();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -57,6 +61,14 @@ const TaskForm = ({ fatherId = null }) => {
                 labelText="Description"
                 onChange={handleChange}
                 placeholder={"To make Somthing Greate, we need little steps.."}
+            />
+
+            <BaseInput
+                inputNameId="color"
+                inputType="color"
+                labelText="Task color"
+                onChange={handleChange}
+                value={taskData.color}
             />
 
             <BaseInput

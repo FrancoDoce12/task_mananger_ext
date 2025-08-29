@@ -1,6 +1,6 @@
 import { useTasks } from '../../../hooks/useTasks';
 import IsActiveButton from './isActiveButton';
-import { viewerStates } from '../../../constants/enums';
+import { viewerStates, defaultColor } from '../../../constants/enums';
 const { SCREEN_TASK } = viewerStates
 /**
  * Displays an individual task in the sidebar with activation toggle.
@@ -15,6 +15,7 @@ const SideBarTask = ({ task, id }) => {
     return (
         <li className='p-2' key={id}>
             <h5
+                style={{ outlineColor: task.color || defaultColor}}
                 className='side-bar-task-header'
                 onClick={() => { setSelectedTask(task); setViewerState(SCREEN_TASK); }}
             >{task.name}</h5>

@@ -16,6 +16,7 @@ import { dataKeyWords } from "../constants/enums";
      * @property {Date} creationDate - The Date of the creation of the task (yyyy-mm-dd).
      * @property {Date} startDate - The Date when the task should start (yyyy-mm-dd).
      * @property {Date} endDate - The Date when the task should end or be finished (yyyy-mm-dd).
+     * @property {string} color - The Task’s representative color.
  */
 
 /**
@@ -224,6 +225,7 @@ export const TaskService = {
             creationDate,
             startDate: creationDate,
             endDate: null,
+            color: this.getRandomHexColor()
         };
         // overwrite default values with the previus task
         const normTask = { ...defaultValues, ...oldTask };
@@ -345,6 +347,22 @@ export const TaskService = {
             err: false
         }
 
+    },
+    // IA Generated
+    getRandomRGBColor: function () {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return `rgb(${r}, ${g}, ${b})`;
+    },
+    // IA generated
+    getRandomHexColor: function () {
+        const randomNum = Math.floor(Math.random() * 0xFFFFFF);
+        let hexColor = randomNum.toString(16);
+        while (hexColor.length < 6) {
+            hexColor = '0' + hexColor;
+        };
+        return '#' + hexColor;
     },
 
     areActiveMainTasks: function (currentTasks) {
