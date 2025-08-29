@@ -419,7 +419,7 @@ const useNodesLogic = () => {
             };
             let childs = []
             nodes.forEach((node) => {
-                if (positions[node.type] === CHILD_NODE_TYPE_KEY) {
+                if (node.type === CHILD_NODE_TYPE_KEY) {
                     childs.push({ ...node.data.task, position: node.position })
                 } else {
                     positions[node.type] = node.position
