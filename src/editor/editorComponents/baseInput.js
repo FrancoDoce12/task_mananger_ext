@@ -12,7 +12,12 @@ const BaseInput = ({
     ...restProps }) => {
 
     const UnsetButton = unset ?
-        <button className="save-input-button" key={`${inputNameId}-unset`} onClick={onUnset}>Unset</button> :
+        <button 
+        className="save-input-button" 
+        type="button" 
+        key={`${inputNameId}-unset`} 
+        onClick={onUnset}>Unset</button> 
+        :
         <></>
 
     // if it's null, make it an empty string
